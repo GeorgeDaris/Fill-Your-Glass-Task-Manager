@@ -1,91 +1,109 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
+import { ref, computed, reactive, provide } from "vue";
+import AddTodo from "./components/AddTodo.vue";
+import TodoList from "./components/TodoList.vue";
+import ProgressBar from "./components/ProgressBar.vue";
+
+let title = ref("Fill Your Cup Todo App (test)");
+const todos = reactive([
+  {
+    id: 0,
+    title: "Create a vue todo app",
+    description: "test",
+    category: "Personal",
+    completed: false,
+    subTasks: [
+      {
+        id: 0,
+        title: "make sub-tasks work",
+        completed: true,
+      },
+      {
+        id: 1,
+        title: "Style it with CSS",
+        completed: false,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: "Make it work",
+    category: "Personal",
+    completed: true,
+  },
+]);
+
+const todosCompleted = computed(() => {
+  const completedTodos = todos.filter((item) => item.completed).length;
+  return `${completedTodos} of ${todos.length} completed`;
+});
+
+const addTodo = (newTodo) => {
+  let id = todos.length;
+  todos.push({
+    id: id++,
+    title: newTodo.title,
+    description: newTodo.description,
+    category: newTodo.category,
+    subTasks: newTodo.subTasks,
+  });
+};
+
+const deleteTodo = (todoToDelete) => {
+  let todoIndex = todos.findIndex((item) => item.id === todoToDelete.id);
+  todos.splice(todoIndex, 1);
+};
+
+const categories = reactive([
+  {
+    id: 0,
+    title: "Work",
+    image: "test",
+    color: "#a23f3f",
+  },
+  {
+    id: 1,
+    title: "Personal",
+    image: "test",
+    color: "#525798",
+  },
+]);
+
+const addCategory = (category) => {
+  //Emitted event from AddTodo, which came from CreateCategory
+  //console.log(newCategories)
+  //let id = categories.length
+  //categories.push({id: id++, title: newCategories.title, image: newCategories.image, color: newCategories.color})
+  //newCategories.forEach(category => {
+  categories.push(category);
+  //})
+};
+
+provide("categories", categories);
 </script>
 
 <template>
-  <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="@/assets/logo.svg"
-      width="125"
-      height="125"
-    />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <div>
+    <main>
+      <header>
+        <!--<pre>
+        {{ todos }}
+        </pre>-->
+        <h1>
+          {{ title }}
+        </h1>
+      </header>
+      <AddTodo
+        @add-todo="addTodo"
+        @add-category="addCategory"
+        :categories="categories"
+      />
+      <TodoList :todos="todos" @delete-todo="deleteTodo">{{
+        todosCompleted
+      }}</TodoList>
+      <ProgressBar class="glass" :total="todos"></ProgressBar>
+    </main>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style>
+<style></style>
