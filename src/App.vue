@@ -39,7 +39,7 @@ const todosCompleted = computed(() => {
 });
 
 const addTodo = (newTodo) => {
-  let id = todos.length;
+  let id = Math.floor(Date.now() * Math.random());
   todos.push({
     id: id++,
     title: newTodo.title,

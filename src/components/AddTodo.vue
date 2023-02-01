@@ -1,5 +1,6 @@
+<!-- eslint-disable prettier/prettier -->
 <script setup>
-import { ref, reactive, nextTick } from "vue";
+import { ref, reactive, computed, nextTick } from "vue";
 import CreateCategory from "./CreateCategory.vue";
 
 defineProps(["categories"]);
@@ -55,6 +56,14 @@ const addSubTask = async () => {
   //})
   //newTodo.subTasks.push({title: newTask})
 };
+
+const uniqueSubTaskId = computed(() => {
+  return Date.now + Math.random();
+});
+
+const reversedSubTasks = computed(() => {
+  return newTodo.subTasks.slice().reverse();
+});
 
 let input = ref(null); //accesing the input element
 
@@ -118,12 +127,14 @@ const sendCategory = (newCategory) => {
           v-model.trim="newTask"
           ref="subTaskInput"
         />
-        <button @click.prevent="addSubTask">+ Add a sub-task</button>
+        <button @click.prevent="addSubTask">+ Add sub-task</button>
         <p v-if="subTaskWarn">
           {{ subTaskWarnMessage }}
         </p>
         <ul>
-          <li v-for="task in newTodo.subTasks">{{ task.title }}</li>
+          <li v-for="task in reversedSubTasks" :key="uniqueSubTaskId">
+            {{ task.title }}
+          </li>
         </ul>
       </div>
     </section>

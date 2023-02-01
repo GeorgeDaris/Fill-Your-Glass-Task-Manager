@@ -1,12 +1,12 @@
 <script setup>
-import { ref, computed, inject } from "vue";
+import { inject } from "vue";
 import ProgressBar from "./ProgressBar.vue";
 import EditTodo from "./EditTodo.vue";
 
 defineProps(["todos"]);
 defineEmits(["delete-todo"]);
 
-let categoryColor = ref("");
+// let categoryColor = ref("");
 
 const categories = inject("categories");
 /*const setCategoryColor = computed((todoCategory) => {
@@ -18,7 +18,7 @@ const categories = inject("categories");
 })*/
 
 //Create a seperate editing component to prevent the state from changing for all todos ✔
-//Use <details> and <summary> on todos that have sub tasks to create a collapsable accordion
+//Use <details> and <summary> on todos that have sub tasks to create a collapsable accordion ✔
 //Look into creating a unique label
 </script>
 
@@ -28,7 +28,7 @@ const categories = inject("categories");
       <slot />
     </h4>
     <ul>
-      <li v-for="todo in todos" :key="todo.id">
+      <li v-for="todo in todos.slice().reverse()" :key="todo.id">
         <details open v-if="todo.subTasks && todo.subTasks.length >= 1">
           <!-- checking for the lenght as well, since I'm pushing the subtasks anyway in App.vue, to prevent all todos from appearing inside a details element -->
           <summary @keyup.space.prevent>
@@ -47,7 +47,7 @@ const categories = inject("categories");
             <ProgressBar :total="todo.subTasks"></ProgressBar>
             <span>{{ todo.description }}</span>
             <br />
-            <div v-for="category in categories">
+            <div v-for="category in categories" :key="JSON.stringify(category)">
               <span
                 v-if="category.title === todo.category"
                 class="todo-color"
@@ -59,7 +59,10 @@ const categories = inject("categories");
             <br />
           </summary>
           <ul>
-            <li v-for="task in todo.subTasks">
+            <li
+              v-for="task in todo.subTasks.slice().reverse()"
+              :key="JSON.stringify(task)"
+            >
               <input
                 type="checkbox"
                 :checked="task.completed"
@@ -89,7 +92,7 @@ const categories = inject("categories");
           ></ProgressBar>
           <span>{{ todo.description }}</span>
           <br />
-          <div v-for="category in categories">
+          <div v-for="category in categories" :key="JSON.stringify(category)">
             <span
               v-if="category.title === todo.category"
               class="todo-color"
