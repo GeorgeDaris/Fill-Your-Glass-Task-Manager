@@ -1,7 +1,9 @@
 <script setup>
 import { ref, computed, reactive, provide } from "vue";
 import AddTodo from "./components/AddTodo.vue";
-import TodoList from "./components/TodoList.vue";
+// import TodoList from "./components/TodoList.vue";
+import TodoListNew from "./components/TodoListNew.vue";
+
 import ProgressBar from "./components/ProgressBar.vue";
 
 let title = ref("Fill Your Cup Todo App (test)");
@@ -98,9 +100,12 @@ provide("categories", categories);
         @add-category="addCategory"
         :categories="categories"
       />
-      <TodoList :todos="todos" @delete-todo="deleteTodo">{{
+      <!-- <TodoList :todos="todos" @delete-todo="deleteTodo">{{
         todosCompleted
-      }}</TodoList>
+      }}</TodoList> -->
+      <TodoListNew :todos="todos" @delete-todo="deleteTodo">{{
+        todosCompleted
+      }}</TodoListNew>
       <ProgressBar class="glass" :total="todos"></ProgressBar>
     </main>
   </div>

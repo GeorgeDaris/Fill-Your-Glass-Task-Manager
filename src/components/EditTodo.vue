@@ -1,7 +1,8 @@
 <script setup>
 import { ref, nextTick } from "vue";
 
-defineProps(["todo"]);
+defineProps(["todo", "show"]);
+defineEmits(["show-hide"]);
 
 let editing = ref(false);
 let editingText = ref("Edit");
@@ -21,8 +22,18 @@ async function editLabel() {
 
 <template>
   <form>
-    <input type="text" v-if="editing" v-model="todo.title" ref="input" />
-    <button @click.prevent="editLabel">
+    <input
+      type="text"
+      v-if="editing"
+      v-model.trim="todo.title"
+      ref="input"
+      @focusin="$emit('show-hide')"
+    />
+    <button
+      @click.prevent="editLabel"
+      @focusin="$emit('show-hide')"
+      @focusout="$emit('show-hide')"
+    >
       {{ editingText }}
     </button>
   </form>

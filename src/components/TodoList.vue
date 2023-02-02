@@ -1,5 +1,5 @@
 <script setup>
-import { inject } from "vue";
+import { inject, ref } from "vue";
 import ProgressBar from "./ProgressBar.vue";
 import EditTodo from "./EditTodo.vue";
 
@@ -16,6 +16,12 @@ const categories = inject("categories");
     }
   }
 })*/
+
+let btnActive = ref(false);
+
+const showBtns = () => {
+  !btnActive.value ? (btnActive.value = true) : (btnActive.value = false);
+};
 
 //Create a seperate editing component to prevent the state from changing for all todos ✔
 //Use <details> and <summary> on todos that have sub tasks to create a collapsable accordion ✔
