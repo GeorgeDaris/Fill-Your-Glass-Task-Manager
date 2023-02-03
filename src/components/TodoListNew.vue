@@ -28,7 +28,7 @@ defineEmits(["delete-todo"]);
 </script>
 
 <template>
-  <section>
+  <section class="col-start-1">
     <h4>
       <slot />
     </h4>
@@ -55,10 +55,10 @@ defineEmits(["delete-todo"]);
 .edit-container {
   display: inline-block;
 }
-body {
+/* body {
   color: white;
   background: #36393f;
-}
+} */
 
 .todo-color::before {
   content: "";

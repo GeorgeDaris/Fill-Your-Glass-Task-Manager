@@ -1,7 +1,9 @@
 /* @import "./base.css"; */
-/* @tailwind base;
+@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+
+@tailwind base;
 @tailwind components;
-@tailwind utilities; */
+@tailwind utilities;
 
 /*#app {
   max-width: 1280px;

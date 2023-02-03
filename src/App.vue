@@ -6,7 +6,7 @@ import TodoListNew from "./components/TodoListNew.vue";
 
 import ProgressBar from "./components/ProgressBar.vue";
 
-let title = ref("Fill Your Cup Todo App (test)");
+// let title = ref("Fill Your Cup Todo App (test)");
 const todos = reactive([
   {
     id: 0,
@@ -85,16 +85,21 @@ provide("categories", categories);
 </script>
 
 <template>
-  <div>
-    <main>
-      <header>
-        <!--<pre>
+  <!-- <div> -->
+  <main class="">
+    <!-- <header>-->
+    <!--<pre>
         {{ todos }}
         </pre>-->
-        <h1>
+    <!-- <h1>
           {{ title }}
         </h1>
-      </header>
+      </header> -->
+    <!-- <div class="grid items-center w-auto"> -->
+    <!-- [1.5fr_2fr] -->
+    <div
+      class="grid md:grid-cols-[minmax(5rem,_1.5fr)_minmax(7rem,_2fr)] justify-center gap-4 m-12"
+    >
       <AddTodo
         @add-todo="addTodo"
         @add-category="addCategory"
@@ -107,8 +112,10 @@ provide("categories", categories);
         todosCompleted
       }}</TodoListNew>
       <ProgressBar class="glass" :total="todos"></ProgressBar>
-    </main>
-  </div>
+    </div>
+    <!-- </div> -->
+  </main>
+  <!-- </div> -->
 </template>
 
 <style></style>

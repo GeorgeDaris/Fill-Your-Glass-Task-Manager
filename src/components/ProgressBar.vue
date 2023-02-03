@@ -8,7 +8,7 @@ defineProps(["total"]);
     <progress
       :max="total.length"
       :value="total.filter((item) => item.completed).length"
-      class="glass"
+      class="glass bg-lightGrey h-2 rounded-full"
     ></progress>
   </div>
 </template>

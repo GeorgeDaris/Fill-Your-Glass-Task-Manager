@@ -97,22 +97,46 @@ const openEditForm = () => {
           :id="task.title"
         />
         <label :for="task.title">{{ task.title }}</label>
+        <!-- <div class="edit-container" :class="btnActive">
+          <button @click="openEditForm" @focus="showBtns">
+            {{ editingText }}
+          </button>
+          <button @click="$emit('delete-todo', task)" @focus="showBtns">
+            Delete
+          </button>
+        </div>
+        <EditItem
+          class="todo-edit-form"
+          :todo="task"
+          v-if="isEditing"
+          @edited="openEditForm"
+        ></EditItem> -->
       </li>
     </ul>
   </details>
 
-  <div v-else draggable="true">
+  <div v-else draggable="true" @mouseenter="showBtns" @mouseleave="hideBtns">
     <input
       type="checkbox"
       :checked="todo.completed"
       v-model="todo.completed"
       :id="todo.title"
     />
-    <label :for="todo.title">{{ todo.title }}</label>
-    <div class="edit-container">
-      <EditTodo :todo="todo"></EditTodo>
-      <button @click="$emit('delete-todo', todo)">Delete</button>
+    <label :for="todo.title" @dblclick="openEditForm">{{ todo.title }}</label>
+    <div class="edit-container" :class="btnActive">
+      <button @click="openEditForm" @focus="showBtns">
+        {{ editingText }}
+      </button>
+      <button @click="$emit('delete-todo', todo)" @focus="showBtns">
+        Delete
+      </button>
     </div>
+    <EditItem
+      class="todo-edit-form"
+      :todo="todo"
+      v-if="isEditing"
+      @edited="openEditForm"
+    ></EditItem>
     <br />
     <ProgressBar
       v-if="todo.subTasks && todo.subTasks.length > 1"
@@ -146,10 +170,10 @@ const openEditForm = () => {
   opacity: 1;
 }
 
-body {
+/* body {
   color: white;
   background: #36393f;
-}
+} */
 
 .todo-color::before {
   content: "";

@@ -92,75 +92,95 @@ const sendCategory = (newCategory) => {
 </script>
 
 <template>
-  <form>
+  <form class="relative">
     <!--<pre>{{newTodo}}
     </pre>-->
-    <label>
+    <label class="text-lg font-semibold">
       {{ todoInfo.question }}
     </label>
     <br />
     <input
+      class="title-input border-[0.2rem] rounded-lg p-1 border-accentColor w-64 bg-inherit"
       :placeholder="todoInfo.placeholder"
       type="text"
       v-model.trim="newTodo.title"
       ref="input"
     />
-    <br />
+    <!-- <br /> -->
     <span v-if="warn"> Please add a todo item first </span>
-    <br />
-    <label>
-      {{ todoInfo.description }}
-    </label>
-    <br />
-    <textarea
-      placeholder="Use the three first chapters to showcase the use of literary devices"
-      v-model.trim="newTodo.description"
-    ></textarea>
-    <br />
-    <section>
-      <div>
-        <label> Sub-task </label>
-        <br />
-        <input
-          :placeholder="todoInfo.placeholder"
-          type="text"
-          v-model.trim="newTask"
-          ref="subTaskInput"
-        />
-        <button @click.prevent="addSubTask">+ Add sub-task</button>
-        <p v-if="subTaskWarn">
-          {{ subTaskWarnMessage }}
-        </p>
-        <ul>
-          <li v-for="task in reversedSubTasks" :key="uniqueSubTaskId">
-            {{ task.title }}
-          </li>
-        </ul>
-      </div>
-    </section>
-    <br />
-    <section>
-      <h3>
-        {{ todoInfo.category.title }}
-      </h3>
-      <ul>
-        <li v-for="category in categories">
-          <div
-            class="color-indicator"
-            :style="{ 'background-color': category.color }"
-          ></div>
-          <label>
-            {{ category.title }}
-          </label>
-          <input
-            name="category"
-            type="radio"
-            :value="category.title"
-            v-model="newTodo.category"
-          />
-        </li>
-      </ul>
-      <!--<label> Simplified it with a v-for
+    <!-- <br /> -->
+    <Transition name="slide-fade">
+      <div
+        class="flex flex-col justify-between border-[0.2rem] rounded-lg rounded-t-none p-1 border-accentColor w-64 bg-bgColor dark:bg-darkBg absolute z-[3] top-[3.7rem]"
+        v-show="newTodo.title"
+      >
+        <label class="m-1">
+          {{ todoInfo.description }}
+        </label>
+        <!-- <br /> -->
+        <textarea
+          class="border-[0.1rem] rounded-lg p-1 border-accentColor bg-inherit m-1 resize-none"
+          placeholder="Use the three first chapters to showcase the use of literary devices"
+          v-model.trim="newTodo.description"
+        ></textarea>
+        <!-- <br /> -->
+        <section>
+          <div class="flex flex-col">
+            <label class="m-1"> Sub-task </label>
+            <!-- <br /> -->
+            <div class="relative flex flex-col">
+              <input
+                class="border-[0.1rem] rounded-lg p-1 border-accentColor over bg-inherit m-1"
+                :placeholder="todoInfo.placeholder"
+                type="text"
+                v-model.trim="newTask"
+                ref="subTaskInput"
+              />
+              <button
+                class="absolute bottom-1 right-1 w-[2.2rem] h-[2.2rem] z-[4] rounded-lg rounded-l-none bg-accentColor text-xl font-bold transition-colors duration-3d00 hover:bg-accentLight hover:transition-colors hover:duration-300"
+                @click.prevent="addSubTask"
+                tooltip="Add sub-task"
+              >
+                +
+              </button>
+            </div>
+            <p class="m-1" v-if="subTaskWarn">
+              {{ subTaskWarnMessage }}
+            </p>
+            <ul class="m-1">
+              <li
+                class="list-disc list-inside marker:text-accentColor"
+                v-for="task in reversedSubTasks"
+                :key="uniqueSubTaskId"
+              >
+                {{ task.title }}
+              </li>
+            </ul>
+          </div>
+        </section>
+        <!-- <br /> -->
+        <section>
+          <h3>
+            {{ todoInfo.category.title }}
+          </h3>
+          <ul>
+            <li v-for="category in categories">
+              <div
+                class="color-indicator"
+                :style="{ 'background-color': category.color }"
+              ></div>
+              <label>
+                {{ category.title }}
+              </label>
+              <input
+                name="category"
+                type="radio"
+                :value="category.title"
+                v-model="newTodo.category"
+              />
+            </li>
+          </ul>
+          <!--<label> Simplified it with a v-for
           {{todoInfo.category.work}}
         </label>
         <input name="category" type="radio" :value="todoInfo.category.work" v-model="newTodo.category">
@@ -168,16 +188,21 @@ const sendCategory = (newCategory) => {
           {{todoInfo.category.personal}}
         </label>
         <input name="category" type="radio" :value="todoInfo.category.personal" v-model="newTodo.category">-->
-    </section>
-    <CreateCategory @send-category="sendCategory"></CreateCategory>
-    <br />
-    <button @click.enter.prevent="sendTodo">
-      {{ todoInfo.button }}
-    </button>
+        </section>
+        <CreateCategory @send-category="sendCategory"></CreateCategory>
+        <!-- <br /> -->
+        <button @click.enter.prevent="sendTodo">
+          {{ todoInfo.button }}
+        </button>
+      </div>
+    </Transition>
   </form>
 </template>
 
 <style scoped>
+.title-input:focus {
+  outline: none;
+}
 .color-indicator {
   display: inline-block;
   width: 1rem;
@@ -185,5 +210,19 @@ const sendCategory = (newCategory) => {
   /*background-color: v-bind('categories[1].color');*/
   border-radius: 50%;
   margin-right: 1rem;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  /* transform: translateY(-2px); */
+  opacity: 0;
 }
 </style>
