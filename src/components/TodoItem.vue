@@ -59,18 +59,33 @@ const handleCheckbox = (todo) => {
     <!-- checking for the lenght as well, since I'm pushing the subtasks anyway in App.vue, to prevent all todos from appearing inside a details element -->
     <summary @keyup.space.prevent class="wid">
       <!-- prevents the details element from getting toggled while editing a todo -->
-      <input
-        class="appearance-none border-[0.15rem] rounded-sm p-[0.28rem] border-accentColor bg-inherit checked:bg-accentColor"
+      <!-- <input
+        class="appearance-none border-[0.15rem] rounded-sm p-[0.38rem] border-accentColor bg-inherit checked:bg-accentColor"
         type="checkbox"
         :checked="todo.completed"
         v-model="todo.completed"
         :id="todo.title"
         @keyup.space="handleCheckbox(todo)"
         ref="summaryCheckbox"
-      />
-      <label class="pl-2" :for="todo.title" @dblclick="openEditForm">{{
-        todo.title
-      }}</label>
+      /> -->
+      <label
+        class="inline-flex items-center my-1"
+        :for="todo.title"
+        @dblclick="openEditForm"
+      >
+        <input
+          class="appearance-none border-[0.15rem] rounded-md p-2 border-accentColor bg-inherit checked:bg-accentColor"
+          type="checkbox"
+          :checked="todo.completed"
+          v-model="todo.completed"
+          :id="todo.title"
+          @keyup.space="handleCheckbox(todo)"
+          ref="summaryCheckbox"
+        />
+        <span class="pl-2">
+          {{ todo.title }}
+        </span>
+      </label>
       <div class="edit-container" :class="btnActive">
         <button @click="openEditForm" @focus="showBtns">
           {{ editingText }}
@@ -141,15 +156,24 @@ const handleCheckbox = (todo) => {
     @mouseenter="showBtns"
     @mouseleave="hideBtns"
   >
-    <input
-      type="checkbox"
-      :checked="todo.completed"
-      v-model="todo.completed"
-      :id="todo.title"
-    />
-    <label class="m-1" :for="todo.title" @dblclick="openEditForm">{{
-      todo.title
-    }}</label>
+    <label
+      class="inline-flex items-center my-1"
+      :for="todo.title"
+      @dblclick="openEditForm"
+    >
+      <input
+        class="appearance-none border-[0.15rem] rounded-md p-2 border-accentColor bg-inherit checked:bg-accentColor"
+        type="checkbox"
+        :checked="todo.completed"
+        v-model="todo.completed"
+        :id="todo.title"
+        @keyup.space="handleCheckbox(todo)"
+        ref="summaryCheckbox"
+      />
+      <span class="pl-2">
+        {{ todo.title }}
+      </span>
+    </label>
     <div class="edit-container" :class="btnActive">
       <button @click="openEditForm" @focus="showBtns">
         {{ editingText }}
@@ -185,9 +209,6 @@ const handleCheckbox = (todo) => {
       >
       <!--Changing the color of the before element-->
     </div>
-    <hr
-      class="bg-lightGrey dark:bg-lightDark h-[0.15rem] border-none rounded-full my-1"
-    />
   </div>
 </template>
 
