@@ -1,6 +1,6 @@
 <!-- eslint-disable prettier/prettier -->
 <script setup>
-import { ref, reactive, computed, nextTick } from "vue";
+import { ref, reactive, computed, nextTick, watch } from "vue";
 import CreateCategory from "./CreateCategory.vue";
 
 defineProps(["categories"]);
@@ -89,6 +89,13 @@ const sendCategory = (newCategory) => {
   //bubbling up the emitted event from CreateCategory
   emit("add-category", newCategory);
 };
+
+let formIsOpen = ref(false);
+
+watch(newTodo, async (newerTodo) => {
+  //conditionally changing the border radius when the user starts typing
+  newerTodo.title ? (formIsOpen.value = true) : (formIsOpen.value = false);
+});
 </script>
 
 <template>
@@ -100,18 +107,19 @@ const sendCategory = (newCategory) => {
     </label>
     <br />
     <input
-      class="title-input border-[0.2rem] rounded-lg p-1 border-accentColor w-64 bg-inherit"
+      class="title-input border-[0.2rem] rounded-lg p-1 border-accentColor w-64 bg-inherit hover:border-accentLight"
       :placeholder="todoInfo.placeholder"
       type="text"
       v-model.trim="newTodo.title"
       ref="input"
+      :class="{ activeForm: formIsOpen }"
     />
     <!-- <br /> -->
     <span v-if="warn"> Please add a todo item first </span>
     <!-- <br /> -->
     <Transition name="slide-fade">
       <div
-        class="flex flex-col justify-between border-[0.2rem] rounded-lg rounded-t-none p-1 border-accentColor w-64 bg-bgColor dark:bg-darkBg absolute z-[3] top-[3.7rem]"
+        class="flex flex-col justify-between border-[0.2rem] rounded-lg rounded-t-none p-1 border-accentColor w-64 max-h-[30rem] overflow-auto bg-bgColor dark:bg-darkBg absolute z-[3] top-[4.1rem] scroll-container shadow-[0.2rem_0.2rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.2rem_0.2rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
         v-show="newTodo.title"
       >
         <label class="m-1">
@@ -119,7 +127,7 @@ const sendCategory = (newCategory) => {
         </label>
         <!-- <br /> -->
         <textarea
-          class="border-[0.1rem] rounded-lg p-1 border-accentColor bg-inherit m-1 resize-none"
+          class="border-[0.1rem] rounded-lg p-1 border-accentColor bg-inherit m-1 resize-none scroll-container"
           placeholder="Use the three first chapters to showcase the use of literary devices"
           v-model.trim="newTodo.description"
         ></textarea>
@@ -137,7 +145,7 @@ const sendCategory = (newCategory) => {
                 ref="subTaskInput"
               />
               <button
-                class="absolute bottom-1 right-1 w-[2.2rem] h-[2.2rem] z-[4] rounded-lg rounded-l-none bg-accentColor text-xl font-bold transition-colors duration-3d00 hover:bg-accentLight hover:transition-colors hover:duration-300"
+                class="absolute bottom-[0.27rem] right-1 w-[2.2rem] h-[2.2rem] z-[4] rounded-lg rounded-l-none bg-accentColor text-bgColor text-xl font-bold transition-colors duration-3d00 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
                 @click.prevent="addSubTask"
                 tooltip="Add sub-task"
               >
@@ -147,7 +155,7 @@ const sendCategory = (newCategory) => {
             <p class="m-1" v-if="subTaskWarn">
               {{ subTaskWarnMessage }}
             </p>
-            <ul class="m-1">
+            <ul class="m-1 max-h-20 overflow-auto scroll-container">
               <li
                 class="list-disc list-inside marker:text-accentColor"
                 v-for="task in reversedSubTasks"
@@ -159,7 +167,7 @@ const sendCategory = (newCategory) => {
           </div>
         </section>
         <!-- <br /> -->
-        <section>
+        <section class="flex flex-col m-1">
           <h3>
             {{ todoInfo.category.title }}
           </h3>
@@ -169,7 +177,7 @@ const sendCategory = (newCategory) => {
                 class="color-indicator"
                 :style="{ 'background-color': category.color }"
               ></div>
-              <label>
+              <label :for="category.title">
                 {{ category.title }}
               </label>
               <input
@@ -177,6 +185,7 @@ const sendCategory = (newCategory) => {
                 type="radio"
                 :value="category.title"
                 v-model="newTodo.category"
+                :id="category.title"
               />
             </li>
           </ul>
@@ -210,6 +219,13 @@ const sendCategory = (newCategory) => {
   /*background-color: v-bind('categories[1].color');*/
   border-radius: 50%;
   margin-right: 1rem;
+}
+
+.activeForm {
+  /*gets used when the user starts typing*/
+  border-bottom-left-radius: unset;
+  border-bottom-right-radius: unset;
+  transition: all 0.1s;
 }
 
 .slide-fade-enter-active {

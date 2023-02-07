@@ -29,10 +29,10 @@ defineEmits(["delete-todo"]);
 
 <template>
   <section class="col-start-1">
-    <h4>
+    <!-- <h4>
       <slot />
-    </h4>
-    <ul>
+    </h4> -->
+    <ul class="pr-1 w-64 max-h-96 overflow-auto scroll-container">
       <li
         class="todo-list-item"
         v-for="todo in todos.slice().reverse()"
@@ -45,6 +45,7 @@ defineEmits(["delete-todo"]);
       </li>
     </ul>
   </section>
+  <!-- border-2 border-lightDark -->
 </template>
 
 <style>

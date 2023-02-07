@@ -51,23 +51,75 @@ const sendCategory = () => {
 
 <template>
   <button @click.prevent="openForm">+ Create new category</button>
-  <section v-if="formOpen">
-    <label> Title </label>
+  <section v-if="formOpen" class="flex flex-col">
+    <label class="m-1" :for="newCategory.title"> Title </label>
     <br />
-    <input type="text" v-model.trim="newCategory.title" ref="inputTitle" />
+    <input
+      class="border-[0.1rem] rounded-lg p-1 border-accentColor bg-inherit m-1"
+      type="text"
+      v-model.trim="newCategory.title"
+      :id="newCategory.title"
+      ref="inputTitle"
+    />
     <br />
-    <label> Image </label>
+    <!-- <label> Image </label>
     <br />
-    <input type="url" v-model.trim="newCategory.image" />
+    <input type="url" v-model.trim="newCategory.image" /> -->
+    <!-- <br /> -->
+    <label class="m-1"> Color </label>
     <br />
-    <label> Color </label>
+    <input
+      class="border-[0.1rem] rounded-lg border-accentColor bg-inherit m-1"
+      type="color"
+      v-model.trim="newCategory.color"
+    />
+    <input
+      class="border-[0.1rem] rounded-lg p-1 border-accentColor bg-inherit m-1"
+      type="text"
+      v-model.trim="newCategory.color"
+    />
     <br />
-    <input type="color" v-model.trim="newCategory.color" />
-    <input type="text" v-model.trim="newCategory.color" />
-    <br />
-    <p v-if="warn">
+    <p class="m-1" v-if="warn">
       {{ warnText }}
     </p>
     <button @click.prevent="openForm">Add category</button>
   </section>
 </template>
+
+<style>
+input[type="color"] {
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  box-sizing: border-box;
+  padding: 0;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  transition: box-shadow 0.3s;
+}
+
+input[type="color"]:hover {
+  border-radius: 0.2rem;
+  transition: box-shadow 0.3s;
+}
+
+/*Taken from this pen: https://codepen.io/leemartin/details/ExPXRzx */
+::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+::-webkit-color-swatch {
+  border: 0;
+  border-radius: 0;
+}
+
+::-moz-color-swatch,
+::-moz-focus-inner {
+  border: 0;
+}
+
+::-moz-focus-inner {
+  padding: 0;
+}
+</style>

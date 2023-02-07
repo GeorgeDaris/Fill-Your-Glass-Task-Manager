@@ -5,6 +5,41 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --secondary: #eaedf5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --secondary: #343945;
+  }
+}
+
+.scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: #7c94d2 var(--secondary);
+  /* scrollbar-gutter: stable; */
+}
+
+.glass progress {
+  transform: rotate(-90deg);
+  transform-origin: right;
+}
+
+progress::-moz-progress-bar {
+  background-color: #7c94d2;
+}
+
+/* 
+accentColor: "#7C94D2",
+        bgColor: "white",
+        textColor: "#283453",
+        accentLight: "#89a4e9",
+        accentDark: "343945",
+        lightGrey: "#EAEDF5",
+        darkBg: "#1D212A",
+        darkText: "#E7ECF8", */
+
 /*#app {
   max-width: 1280px;
   margin: 0 auto;
