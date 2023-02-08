@@ -4,7 +4,7 @@ defineProps(["total"]);
 </script>
 
 <template>
-  <div>
+  <div class="">
     <progress
       :max="total.length"
       :value="total.filter((item) => item.completed).length"

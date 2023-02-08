@@ -34,7 +34,7 @@ defineEmits(["delete-todo"]);
     </h4> -->
     <ul class="pr-1 w-64 max-h-96 overflow-auto scroll-container">
       <li
-        class="todo-list-item"
+        class="todo-list-item group"
         v-for="todo in todos.slice().reverse()"
         :key="todo.id"
       >
@@ -42,6 +42,9 @@ defineEmits(["delete-todo"]);
           :todo="todo"
           @delete-todo="$emit('delete-todo', todo)"
         ></TodoItem>
+        <hr
+          class="bg-lightGrey dark:bg-lightDark h-[0.15rem] border-none rounded-full my-1 group-last:hidden group-even:bg-hrOdd dark:group-even:bg-hrDarkOdd"
+        />
       </li>
     </ul>
   </section>

@@ -23,7 +23,7 @@
 
 .glass progress {
   transform: rotate(-90deg);
-  transform-origin: right;
+  transform-origin: center;
 }
 
 progress::-moz-progress-bar {

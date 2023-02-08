@@ -50,10 +50,41 @@ const sendCategory = () => {
 </script>
 
 <template>
-  <button @click.prevent="openForm">+ Create new category</button>
+  <button
+    class="w-[2.2rem] h-[2.2rem] z-[4] rounded-lg bg-accentColor text-bgColor text-xl font-bold flex items-center justify-center transition-colors duration-3d00 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
+    @click.prevent="openForm"
+  >
+    <svg
+      class=""
+      width="20"
+      height="20"
+      viewBox="0 0 34 34"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      v-if="!formOpen"
+    >
+      <rect
+        class="fill-bgColor dark:fill-darkBg"
+        y="15.3024"
+        width="33.8837"
+        height="3.27907"
+        rx="1.63953"
+        fill="white"
+      />
+      <rect
+        class="fill-bgColor dark:fill-darkBg"
+        x="18.5814"
+        width="33.8837"
+        height="3.27907"
+        rx="1.63953"
+        transform="rotate(90 18.5814 0)"
+        fill="white"
+      />
+    </svg>
+  </button>
   <section v-if="formOpen" class="flex flex-col">
     <label class="m-1" :for="newCategory.title"> Title </label>
-    <br />
+    <!-- <br /> -->
     <input
       class="border-[0.1rem] rounded-lg p-1 border-accentColor bg-inherit m-1"
       type="text"
@@ -61,13 +92,13 @@ const sendCategory = () => {
       :id="newCategory.title"
       ref="inputTitle"
     />
-    <br />
+    <!-- <br /> -->
     <!-- <label> Image </label>
     <br />
     <input type="url" v-model.trim="newCategory.image" /> -->
     <!-- <br /> -->
     <label class="m-1"> Color </label>
-    <br />
+    <!-- <br /> -->
     <input
       class="border-[0.1rem] rounded-lg border-accentColor bg-inherit m-1"
       type="color"
@@ -78,7 +109,7 @@ const sendCategory = () => {
       type="text"
       v-model.trim="newCategory.color"
     />
-    <br />
+    <!-- <br /> -->
     <p class="m-1" v-if="warn">
       {{ warnText }}
     </p>

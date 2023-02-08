@@ -1,8 +1,9 @@
 <script setup>
 import { inject, ref } from "vue";
 import ProgressBar from "./ProgressBar.vue";
-import EditTodo from "./EditTodo.vue";
+// import EditTodo from "./EditTodo.vue";
 import EditItem from "./EditItem.vue";
+import CategoryLabel from "./CategoryLabel.vue";
 
 defineProps(["todo"]);
 defineEmits(["delete-todo"]);
@@ -69,12 +70,12 @@ const handleCheckbox = (todo) => {
         ref="summaryCheckbox"
       /> -->
       <label
-        class="inline-flex items-center my-1"
+        class="inline-flex items-center my-1 relative"
         :for="todo.title"
         @dblclick="openEditForm"
       >
         <input
-          class="appearance-none border-[0.15rem] rounded-md p-2 border-accentColor bg-inherit checked:bg-accentColor"
+          class="appearance-none border-[0.15rem] rounded-md p-2 border-accentColor bg-inherit peer checked:bg-accentColor"
           type="checkbox"
           :checked="todo.completed"
           v-model="todo.completed"
@@ -82,11 +83,28 @@ const handleCheckbox = (todo) => {
           @keyup.space="handleCheckbox(todo)"
           ref="summaryCheckbox"
         />
+        <svg
+          class="absolute ml-1 hidden peer-checked:block"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 16 12"
+          width="13"
+          height="9"
+        >
+          <path
+            class="fill-bgColor dark:fill-darkBg"
+            fill="white"
+            d="M 0.375 5.78125 L 1.5625 4.5625 L 5.6875 8.625 L 14.2188 0.124999 L 15.4375 1.34375 L 5.6875 11.0625 L 0.375 5.78125 Z"
+          />
+        </svg>
         <span class="pl-2">
           {{ todo.title }}
         </span>
       </label>
-      <div class="edit-container" :class="btnActive">
+      <div
+        class="edit-container absolute right-0 top-0 flex"
+        :class="btnActive"
+      >
         <button @click="openEditForm" @focus="showBtns">
           {{ editingText }}
         </button>
@@ -107,30 +125,57 @@ const handleCheckbox = (todo) => {
       >
         {{ todo.description }}
       </p>
-      <br />
+      <!-- <br /> -->
       <div v-for="category in categories" :key="JSON.stringify(category)">
-        <span
+        <!-- <span
           v-if="category.title === todo.category"
           class="todo-color"
           :style="{ '--category-color': category.color }"
           >{{ todo.category }}</span
-        >
+        > -->
         <!--Changing the color of the before element-->
+        <CategoryLabel
+          :labelColor="category.color"
+          v-if="category.title === todo.category"
+        >
+          {{ category.title }}
+        </CategoryLabel>
       </div>
-      <br />
+      <!-- <br /> -->
     </summary>
     <ul>
       <li
-        v-for="task in todo.subTasks.slice().reverse()"
+        class="ml-4"
+        v-for="task in todo.subTasks"
         :key="JSON.stringify(task)"
       >
-        <input
-          type="checkbox"
-          :checked="task.completed"
-          v-model="task.completed"
-          :id="task.title"
-        />
-        <label :for="task.title">{{ task.title }}</label>
+        <!-- v-for="task in todo.subTasks.slice().reverse()" this shouldn't be needed -->
+        <label :for="task.title" class="inline-flex items-center my-1">
+          <input
+            class="appearance-none border-[0.15rem] rounded-full p-2 border-accentColor bg-inherit checked:bg-accentColor peer"
+            type="checkbox"
+            :checked="task.completed"
+            v-model="task.completed"
+            :id="task.title"
+          />
+          <svg
+            class="absolute ml-1 hidden peer-checked:block"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 16 12"
+            width="13"
+            height="9"
+          >
+            <path
+              class="fill-bgColor dark:fill-darkBg"
+              fill="white"
+              d="M 0.375 5.78125 L 1.5625 4.5625 L 5.6875 8.625 L 14.2188 0.124999 L 15.4375 1.34375 L 5.6875 11.0625 L 0.375 5.78125 Z"
+            />
+          </svg>
+          <span class="pl-2">
+            {{ task.title }}
+          </span>
+        </label>
         <!-- <div class="edit-container" :class="btnActive">
           <button @click="openEditForm" @focus="showBtns">
             {{ editingText }}
@@ -162,7 +207,7 @@ const handleCheckbox = (todo) => {
       @dblclick="openEditForm"
     >
       <input
-        class="appearance-none border-[0.15rem] rounded-md p-2 border-accentColor bg-inherit checked:bg-accentColor"
+        class="appearance-none border-[0.15rem] rounded-md p-2 border-accentColor bg-inherit cursor-pointer hover:border-accentLight checked:bg-accentColor peer"
         type="checkbox"
         :checked="todo.completed"
         v-model="todo.completed"
@@ -170,6 +215,20 @@ const handleCheckbox = (todo) => {
         @keyup.space="handleCheckbox(todo)"
         ref="summaryCheckbox"
       />
+      <svg
+        class="absolute ml-1 hidden peer-checked:block"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 16 12"
+        width="13"
+        height="9"
+      >
+        <path
+          class="fill-bgColor dark:fill-darkBg"
+          fill="white"
+          d="M 0.375 5.78125 L 1.5625 4.5625 L 5.6875 8.625 L 14.2188 0.124999 L 15.4375 1.34375 L 5.6875 11.0625 L 0.375 5.78125 Z"
+        />
+      </svg>
       <span class="pl-2">
         {{ todo.title }}
       </span>

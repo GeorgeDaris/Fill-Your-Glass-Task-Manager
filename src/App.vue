@@ -9,6 +9,12 @@ import ProgressBar from "./components/ProgressBar.vue";
 // let title = ref("Fill Your Cup Todo App (test)");
 const todos = reactive([
   {
+    id: 1,
+    title: "Make it work",
+    category: "Personal",
+    completed: true,
+  },
+  {
     id: 0,
     title: "Create a vue todo app",
     description: "test",
@@ -26,12 +32,6 @@ const todos = reactive([
         completed: false,
       },
     ],
-  },
-  {
-    id: 1,
-    title: "Make it work",
-    category: "Personal",
-    completed: true,
   },
 ]);
 

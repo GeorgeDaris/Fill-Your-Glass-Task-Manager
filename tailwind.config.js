@@ -10,8 +10,10 @@ module.exports = {
         accentLight: "#89a4e9",
         lightGrey: "#EAEDF5",
         lightDark: "#343945",
+        hrOdd: "#F5EAF0",
         darkBg: "#1D212A",
         darkText: "#E7ECF8",
+        hrDarkOdd: "#403C40",
       },
       fontFamily: {
         inter: ["Inter", "sans-serif"],

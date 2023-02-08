@@ -2,6 +2,8 @@
 <script setup>
 import { ref, reactive, computed, nextTick, watch } from "vue";
 import CreateCategory from "./CreateCategory.vue";
+import ToolTip from "./ToolTip.vue";
+import CategoryLabel from "./CategoryLabel.vue";
 
 defineProps(["categories"]);
 const emit = defineEmits(["add-todo", "add-category"]);
@@ -15,7 +17,7 @@ const todoInfo = ref({
     work: "Work",
     personal: "Personal",
   },
-  button: "Add todo",
+  button: "Add to-do",
 });
 
 const newTodo = reactive({
@@ -107,7 +109,7 @@ watch(newTodo, async (newerTodo) => {
     </label>
     <br />
     <input
-      class="title-input border-[0.2rem] rounded-lg p-1 border-accentColor w-64 bg-inherit hover:border-accentLight"
+      class="title-input border-[0.2rem] rounded-lg p-1 pl-2 border-accentColor w-64 bg-inherit transition-all duration-100 hover:border-accentLight"
       :placeholder="todoInfo.placeholder"
       type="text"
       v-model.trim="newTodo.title"
@@ -119,7 +121,7 @@ watch(newTodo, async (newerTodo) => {
     <!-- <br /> -->
     <Transition name="slide-fade">
       <div
-        class="flex flex-col justify-between border-[0.2rem] rounded-lg rounded-t-none p-1 border-accentColor w-64 max-h-[30rem] overflow-auto bg-bgColor dark:bg-darkBg absolute z-[3] top-[4.1rem] scroll-container shadow-[0.2rem_0.2rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.2rem_0.2rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
+        class="flex flex-col justify-between border-[0.2rem] rounded-lg rounded-t-none p-1 border-accentColor w-64 max-h-[30rem] overflow-auto bg-bgColor dark:bg-darkBg absolute z-[3] top-[4.1rem] scroll-container shadow-[0.3rem_0.3rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.3rem_0.3rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
         v-show="newTodo.title"
       >
         <label class="m-1">
@@ -145,13 +147,39 @@ watch(newTodo, async (newerTodo) => {
                 ref="subTaskInput"
               />
               <button
-                class="absolute bottom-[0.27rem] right-1 w-[2.2rem] h-[2.2rem] z-[4] rounded-lg rounded-l-none bg-accentColor text-bgColor text-xl font-bold transition-colors duration-3d00 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
+                class="absolute bottom-[0.27rem] right-1 w-[2.2rem] h-[2.2rem] z-[4] rounded-lg rounded-l-none bg-accentColor text-bgColor text-xl font-bold flex items-center justify-center transition-colors duration-3d00 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
                 @click.prevent="addSubTask"
-                tooltip="Add sub-task"
+                aria-describedby="'subtask'"
               >
-                +
+                <svg
+                  class=""
+                  width="20"
+                  height="20"
+                  viewBox="0 0 34 34"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    class="fill-bgColor dark:fill-darkBg"
+                    y="15.3024"
+                    width="33.8837"
+                    height="3.27907"
+                    rx="1.63953"
+                    fill="white"
+                  />
+                  <rect
+                    class="fill-bgColor dark:fill-darkBg"
+                    x="18.5814"
+                    width="33.8837"
+                    height="3.27907"
+                    rx="1.63953"
+                    transform="rotate(90 18.5814 0)"
+                    fill="white"
+                  />
+                </svg>
               </button>
             </div>
+            <!-- <ToolTip :tooltip-parent="'subtask'"> Add a new sub task </ToolTip> -->
             <p class="m-1" v-if="subTaskWarn">
               {{ subTaskWarnMessage }}
             </p>
@@ -172,7 +200,7 @@ watch(newTodo, async (newerTodo) => {
             {{ todoInfo.category.title }}
           </h3>
           <ul>
-            <li v-for="category in categories">
+            <li v-for="category in categories" :key="category.id">
               <div
                 class="color-indicator"
                 :style="{ 'background-color': category.color }"
@@ -200,7 +228,10 @@ watch(newTodo, async (newerTodo) => {
         </section>
         <CreateCategory @send-category="sendCategory"></CreateCategory>
         <!-- <br /> -->
-        <button @click.enter.prevent="sendTodo">
+        <button
+          class="p-1 m-1 bg-accentColor rounded-lg hover:bg-accentLight text-bgColor dark:text-darkBg"
+          @click.enter.prevent="sendTodo"
+        >
           {{ todoInfo.button }}
         </button>
       </div>
