@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, reactive, provide } from "vue";
+import { computed, reactive, provide } from "vue";
 import AddTodo from "./components/AddTodo.vue";
 // import TodoList from "./components/TodoList.vue";
 import TodoListNew from "./components/TodoListNew.vue";
@@ -98,7 +98,7 @@ provide("categories", categories);
     <!-- <div class="grid items-center w-auto"> -->
     <!-- [1.5fr_2fr] -->
     <div
-      class="grid md:grid-cols-[minmax(5rem,_1.5fr)_minmax(7rem,_2fr)] justify-center gap-4 m-12"
+      class="grid md:grid-cols-[minmax(5rem,_1.5fr)_minmax(7rem,_2fr)] justify-center gap-4 gap-x-20 sm:gap-y-8 mt-12 md:m-0"
     >
       <AddTodo
         @add-todo="addTodo"
@@ -111,7 +111,7 @@ provide("categories", categories);
       <TodoListNew :todos="todos" @delete-todo="deleteTodo">{{
         todosCompleted
       }}</TodoListNew>
-      <ProgressBar class="glass" :total="todos"></ProgressBar>
+      <ProgressBar class="glass" :total="todos" :glass="true"></ProgressBar>
     </div>
     <!-- </div> -->
   </main>

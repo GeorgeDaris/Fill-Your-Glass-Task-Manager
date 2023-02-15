@@ -121,7 +121,7 @@ watch(newTodo, async (newerTodo) => {
     <!-- <br /> -->
     <Transition name="slide-fade">
       <div
-        class="flex flex-col justify-between border-[0.2rem] rounded-lg rounded-t-none p-1 border-accentColor w-64 max-h-[30rem] overflow-auto bg-bgColor dark:bg-darkBg absolute z-[3] top-[4.1rem] scroll-container shadow-[0.3rem_0.3rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.3rem_0.3rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
+        class="flex flex-col justify-between border-[0.2rem] rounded-lg rounded-t-none p-1 border-accentColor w-64 max-h-[28rem] overflow-auto bg-bgColor dark:bg-darkBg absolute z-[4] top-[4.1rem] scroll-container shadow-[0.3rem_0.3rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.3rem_0.3rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
         v-show="newTodo.title"
       >
         <label class="m-1">
@@ -199,15 +199,23 @@ watch(newTodo, async (newerTodo) => {
           <h3>
             {{ todoInfo.category.title }}
           </h3>
-          <ul>
+          <ul class="flex">
             <li v-for="category in categories" :key="category.id">
-              <div
+              <!-- <div
                 class="color-indicator"
                 :style="{ 'background-color': category.color }"
               ></div>
               <label :for="category.title">
                 {{ category.title }}
-              </label>
+              </label> -->
+              <CategoryLabel
+                :labelColor="category.color"
+                :has-sub-tasks="false"
+                v-if="category.title === category.title"
+                class="m-0"
+              >
+                {{ category.title }}
+              </CategoryLabel>
               <input
                 name="category"
                 type="radio"

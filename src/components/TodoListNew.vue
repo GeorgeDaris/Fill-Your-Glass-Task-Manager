@@ -32,20 +32,22 @@ defineEmits(["delete-todo"]);
     <!-- <h4>
       <slot />
     </h4> -->
-    <ul class="pr-1 w-64 max-h-96 overflow-auto scroll-container">
-      <li
-        class="todo-list-item group"
-        v-for="todo in todos.slice().reverse()"
-        :key="todo.id"
-      >
-        <TodoItem
-          :todo="todo"
-          @delete-todo="$emit('delete-todo', todo)"
-        ></TodoItem>
-        <hr
-          class="bg-lightGrey dark:bg-lightDark h-[0.15rem] border-none rounded-full my-1 group-last:hidden group-even:bg-hrOdd dark:group-even:bg-hrDarkOdd"
-        />
-      </li>
+    <ul class="pr-1 w-64 h-96 overflow-y-auto scroll-container">
+      <TransitionGroup name="todos" tag="ul" appear>
+        <li
+          class="todo-list-item group"
+          v-for="todo in todos.slice().reverse()"
+          :key="todo.id"
+        >
+          <TodoItem
+            :todo="todo"
+            @delete-todo="$emit('delete-todo', todo)"
+          ></TodoItem>
+          <hr
+            class="bg-lightGrey dark:bg-lightDark h-[0.15rem] border-none rounded-full my-1 mt-2 group-last:hidden group-even:bg-hrOdd dark:group-even:bg-hrDarkOdd"
+          />
+        </li>
+      </TransitionGroup>
     </ul>
   </section>
   <!-- border-2 border-lightDark -->
@@ -76,5 +78,15 @@ defineEmits(["delete-todo"]);
 
 .todo-list-item {
   position: relative;
+}
+
+.todos-enter-active,
+.todos-leave-active {
+  transition: all 1.3s ease;
+}
+.todos-enter-from,
+.todos-leave-to {
+  opacity: 0;
+  transform: translateX(-60px);
 }
 </style>

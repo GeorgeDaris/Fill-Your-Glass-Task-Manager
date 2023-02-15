@@ -28,7 +28,13 @@ const openForm = async () => {
     formOpen.value = !formOpen.value;
     await nextTick();
     inputTitle.value.focus();
-  } else if (newCategory.title) {
+  } else {
+    formOpen.value = !formOpen.value;
+  }
+};
+
+const handleForm = async () => {
+  if (newCategory.title) {
     //From my understanding, this didn't need a `.value` because it isn't a ref
     //categories.push({title: newCategory.title, color: newCategory.color, image: newCategory.image})
     warn.value = false;
@@ -51,7 +57,7 @@ const sendCategory = () => {
 
 <template>
   <button
-    class="w-[2.2rem] h-[2.2rem] z-[4] rounded-lg bg-accentColor text-bgColor text-xl font-bold flex items-center justify-center transition-colors duration-3d00 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
+    class="w-[2.2rem] h-[2.2rem] z-[4] rounded-lg bg-accentColor text-bgColor text-xl font-bold flex items-center justify-center transition-colors duration-300 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
     @click.prevent="openForm"
   >
     <svg
@@ -81,40 +87,72 @@ const sendCategory = () => {
         fill="white"
       />
     </svg>
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 34 34"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      v-else
+    >
+      <rect
+        class="fill-bgColor dark:fill-darkBg"
+        y="15.3024"
+        width="33.8837"
+        height="3.27907"
+        rx="1.63953"
+        fill="white"
+      />
+    </svg>
   </button>
-  <section v-if="formOpen" class="flex flex-col">
-    <label class="m-1" :for="newCategory.title"> Title </label>
-    <!-- <br /> -->
-    <input
-      class="border-[0.1rem] rounded-lg p-1 border-accentColor bg-inherit m-1"
-      type="text"
-      v-model.trim="newCategory.title"
-      :id="newCategory.title"
-      ref="inputTitle"
-    />
-    <!-- <br /> -->
-    <!-- <label> Image </label>
+  <Transition name="slide-fade">
+    <section v-if="formOpen" class="flex flex-col">
+      <label class="m-1" :for="newCategory.title"> Title </label>
+      <!-- <br /> -->
+      <input
+        class="border-[0.1rem] rounded-lg p-1 border-accentColor bg-inherit m-1"
+        type="text"
+        v-model.trim="newCategory.title"
+        :id="newCategory.title"
+        ref="inputTitle"
+      />
+      <p class="m-1" v-if="warn">
+        {{ warnText }}
+      </p>
+      <!-- <br /> -->
+      <!-- <label> Image </label>
     <br />
     <input type="url" v-model.trim="newCategory.image" /> -->
-    <!-- <br /> -->
-    <label class="m-1"> Color </label>
-    <!-- <br /> -->
-    <input
-      class="border-[0.1rem] rounded-lg border-accentColor bg-inherit m-1"
-      type="color"
-      v-model.trim="newCategory.color"
-    />
-    <input
-      class="border-[0.1rem] rounded-lg p-1 border-accentColor bg-inherit m-1"
-      type="text"
-      v-model.trim="newCategory.color"
-    />
-    <!-- <br /> -->
-    <p class="m-1" v-if="warn">
-      {{ warnText }}
-    </p>
-    <button @click.prevent="openForm">Add category</button>
-  </section>
+      <!-- <br /> -->
+      <label class="m-1" for="Label Color">
+        <span> Color </span>
+
+        <!-- <br /> -->
+        <div class="flex">
+          <input
+            class="border-[0.1rem] border-r-0 border-accentColor bg-inherit my-1"
+            type="color"
+            v-model.trim="newCategory.color"
+            id="Label Color"
+          />
+          <input
+            class="w-44 border-[0.1rem] rounded-lg rounded-l-none p-1 border-accentColor bg-inherit my-1"
+            type="text"
+            v-model.trim="newCategory.color"
+            id="Label Color"
+          />
+        </div>
+      </label>
+      <!-- <br /> -->
+
+      <button
+        @click.prevent="handleForm"
+        class="p-1 m-1 mb-2 bg-accentColor rounded-lg hover:bg-accentLight text-bgColor dark:text-darkBg"
+      >
+        Add category
+      </button>
+    </section>
+  </Transition>
 </template>
 
 <style>
@@ -125,13 +163,18 @@ input[type="color"] {
   -moz-appearance: none;
   box-sizing: border-box;
   padding: 0;
+  height: 2.3rem;
   border-radius: 0.2rem;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
   cursor: pointer;
   transition: box-shadow 0.3s;
 }
 
 input[type="color"]:hover {
   border-radius: 0.2rem;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
   transition: box-shadow 0.3s;
 }
 
@@ -148,9 +191,26 @@ input[type="color"]:hover {
 ::-moz-color-swatch,
 ::-moz-focus-inner {
   border: 0;
+  border-radius: 0.1rem;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 ::-moz-focus-inner {
   padding: 0;
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  /* transform: translateY(-2px); */
+  opacity: 0;
 }
 </style>
