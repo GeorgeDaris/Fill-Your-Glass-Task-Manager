@@ -86,7 +86,7 @@ defineProps(["total", "glass"]);
               100 +
             '%',
         }"
-        class="waves absolute bottom-0 min-w-full transition-all duration-700"
+        class="waves absolute bottom-0 w-[40rem] min-NOTw-full animate-waves transition-all duration-700"
         preserveAspectRatio="none"
         id="visual"
         xmlns="http://www.w3.org/2000/svg"

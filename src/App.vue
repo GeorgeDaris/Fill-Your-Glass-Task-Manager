@@ -56,6 +56,20 @@ const deleteTodo = (todoToDelete) => {
   todos.splice(todoIndex, 1);
 };
 
+const updateTodo = (todoId, newTitle, checkStatus) => {
+  let todoToEdit = todos.find((item) => item.id === todoId);
+
+  if (newTitle) {
+    //in case we are updating the title
+    todoToEdit.title = newTitle;
+  } else {
+    //or just toggling the checkbox
+    todoToEdit.completed = checkStatus;
+  }
+};
+
+provide("updateTodo", updateTodo); //for the EditItem component
+
 const categories = reactive([
   {
     id: 0,
@@ -88,9 +102,10 @@ provide("categories", categories);
   <!-- <div> -->
   <main class="">
     <!-- <header>-->
-    <!--<pre>
+    <!-- <pre>
         {{ todos }}
-        </pre>-->
+        </pre
+    > -->
     <!-- <h1>
           {{ title }}
         </h1>
@@ -98,19 +113,23 @@ provide("categories", categories);
     <!-- <div class="grid items-center w-auto"> -->
     <!-- [1.5fr_2fr] -->
     <div
-      class="grid md:grid-cols-[minmax(5rem,_1.5fr)_minmax(7rem,_2fr)] justify-center gap-4 gap-x-20 sm:gap-y-8 mt-12 md:m-0"
+      class="grid md:grid-cols-[minmax(5rem,_1.5fr)_minmax(7rem,_2fr)] justify-center gap-4 gap-x-20 mt-12 md:m-0"
     >
       <AddTodo
         @add-todo="addTodo"
         @add-category="addCategory"
         :categories="categories"
+        class="max-[740px]:grid max-[740px]:justify-center"
       />
       <!-- <TodoList :todos="todos" @delete-todo="deleteTodo">{{
         todosCompleted
       }}</TodoList> -->
-      <TodoListNew :todos="todos" @delete-todo="deleteTodo">{{
-        todosCompleted
-      }}</TodoListNew>
+      <TodoListNew
+        :todos="todos"
+        @delete-todo="deleteTodo"
+        class="max-[740px]:grid max-[740px]:justify-center"
+        >{{ todosCompleted }}</TodoListNew
+      >
       <ProgressBar class="glass" :total="todos" :glass="true"></ProgressBar>
     </div>
     <!-- </div> -->

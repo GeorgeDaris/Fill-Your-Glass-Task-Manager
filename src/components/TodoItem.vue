@@ -5,10 +5,12 @@ import ProgressBar from "./ProgressBar.vue";
 import EditItem from "./EditItem.vue";
 import CategoryLabel from "./CategoryLabel.vue";
 
-defineProps(["todo"]);
+const props = defineProps(["todo"]);
 defineEmits(["delete-todo"]);
 
 const categories = inject("categories");
+const updateTodo = inject("updateTodo");
+
 let btnActive = ref("");
 
 // const showBtns = () => {
@@ -40,6 +42,12 @@ let detailsOpen = ref(true);
 
 const showDetails = () => {
   detailsOpen.value ? (detailsOpen.value = false) : (detailsOpen.value = true);
+};
+
+let todoChecked = ref(props.todo.completed);
+
+const handleCheckbox = () => {
+  updateTodo(props.todo.id, undefined, todoChecked.value);
 };
 
 // const summaryCheckbox = ref(null);
@@ -101,10 +109,11 @@ const showDetails = () => {
         class="appearance-none border-[0.15rem] rounded-md p-2 border-accentColor bg-inherit peer cursor-pointer checked:bg-accentColor peer"
         type="checkbox"
         :checked="todo.completed"
-        v-model="todo.completed"
-        :id="todo.title"
-        @keyup.space="handleCheckbox(todo)"
+        v-model="todoChecked"
+        :id="todo.id"
+        :name="todo.title"
         ref="summaryCheckbox"
+        @change="handleCheckbox"
       />
       <svg
         class="absolute ml-1 hidden peer-checked:block pointer-events-none"
@@ -249,13 +258,14 @@ const showDetails = () => {
         class="appearance-none border-[0.15rem] rounded-md p-2 border-accentColor bg-inherit cursor-pointer hover:border-accentLight checked:bg-accentColor peer"
         type="checkbox"
         :checked="todo.completed"
-        v-model="todo.completed"
-        :id="todo.title"
-        @keyup.space="handleCheckbox(todo)"
+        v-model="todoChecked"
+        :id="todo.id"
+        :name="todo.title"
         ref="summaryCheckbox"
+        @change="handleCheckbox"
       />
       <svg
-        class="absolute ml-1 hidden peer-checked:block"
+        class="absolute ml-1 hidden pointer-events-none peer-checked:block"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 16 12"

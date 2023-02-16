@@ -18,6 +18,16 @@ module.exports = {
       fontFamily: {
         inter: ["Inter", "sans-serif"],
       },
+      keyframes: {
+        waves: {
+          "0%": { transform: "translateX(0)" },
+          "50%": { transform: "translateX(-50%) scaleY(120%)" },
+          "100%": { transform: "translateX(0%) scaleY(100%)" },
+        },
+      },
+      animation: {
+        waves: "waves 20s ease-in-out infinite",
+      },
     },
   },
   plugins: [],
