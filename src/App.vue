@@ -1,7 +1,6 @@
 <script setup>
 import { computed, reactive, provide } from "vue";
 import AddTodo from "./components/AddTodo.vue";
-// import TodoList from "./components/TodoList.vue";
 import TodoListNew from "./components/TodoListNew.vue";
 
 import ProgressBar from "./components/ProgressBar.vue";
@@ -87,19 +86,13 @@ const categories = reactive([
 
 const addCategory = (category) => {
   //Emitted event from AddTodo, which came from CreateCategory
-  //console.log(newCategories)
-  //let id = categories.length
-  //categories.push({id: id++, title: newCategories.title, image: newCategories.image, color: newCategories.color})
-  //newCategories.forEach(category => {
   categories.push(category);
-  //})
 };
 
 provide("categories", categories);
 </script>
 
 <template>
-  <!-- <div> -->
   <main class="">
     <!-- <header>-->
     <!-- <pre>
@@ -110,8 +103,6 @@ provide("categories", categories);
           {{ title }}
         </h1>
       </header> -->
-    <!-- <div class="grid items-center w-auto"> -->
-    <!-- [1.5fr_2fr] -->
     <div
       class="grid md:grid-cols-[minmax(5rem,_1.5fr)_minmax(7rem,_2fr)] justify-center gap-4 gap-x-20 mt-12 md:m-0"
     >
@@ -121,9 +112,6 @@ provide("categories", categories);
         :categories="categories"
         class="max-[740px]:grid max-[740px]:justify-center"
       />
-      <!-- <TodoList :todos="todos" @delete-todo="deleteTodo">{{
-        todosCompleted
-      }}</TodoList> -->
       <TodoListNew
         :todos="todos"
         @delete-todo="deleteTodo"
@@ -132,9 +120,7 @@ provide("categories", categories);
       >
       <ProgressBar class="glass" :total="todos" :glass="true"></ProgressBar>
     </div>
-    <!-- </div> -->
   </main>
-  <!-- </div> -->
 </template>
 
 <style></style>

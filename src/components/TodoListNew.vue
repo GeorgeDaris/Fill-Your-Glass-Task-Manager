@@ -1,26 +1,8 @@
 <script setup>
-// import { inject, ref } from "vue";
 import TodoItem from "./TodoItem.vue";
 
 defineProps(["todos"]);
 defineEmits(["delete-todo"]);
-
-// let categoryColor = ref("");
-
-// const categories = inject("categories");
-/*const setCategoryColor = computed((todoCategory) => {
-  for (category in categories) {
-    if(todoCategory === category.color) {
-      return category.color
-    }
-  }
-})*/
-
-// let btnActive = ref(false);
-
-// const showBtns = () => {
-//   !btnActive.value ? (btnActive.value = true) : (btnActive.value = false);
-// };
 
 //Create a seperate editing component to prevent the state from changing for all todos ✔
 //Use <details> and <summary> on todos that have sub tasks to create a collapsable accordion ✔
@@ -50,7 +32,6 @@ defineEmits(["delete-todo"]);
       </TransitionGroup>
     </ul>
   </section>
-  <!-- border-2 border-lightDark -->
 </template>
 
 <style>
@@ -61,10 +42,6 @@ defineEmits(["delete-todo"]);
 .edit-container {
   display: inline-block;
 }
-/* body {
-  color: white;
-  background: #36393f;
-} */
 
 .todo-color::before {
   content: "";

@@ -5,12 +5,8 @@ import { reactive, ref, nextTick } from "vue";
 const emit = defineEmits(["send-category"]);
 
 //let categories = reactive( [ //An array wasn't needed after all, as I'm adding one new category at a time
-//{
-//title: "",
+
 //image: "", Implement the logic for the image later, using what I did for Frame It
-//color: ""
-//}
-//])
 
 let formOpen = ref(false);
 let inputTitle = ref(null);
@@ -36,7 +32,6 @@ const openForm = async () => {
 const handleForm = async () => {
   if (newCategory.title) {
     //From my understanding, this didn't need a `.value` because it isn't a ref
-    //categories.push({title: newCategory.title, color: newCategory.color, image: newCategory.image})
     warn.value = false;
     sendCategory();
     newCategory = { title: "", color: "#525798" }; //leaving it with the default color
@@ -108,7 +103,6 @@ const sendCategory = () => {
   <Transition name="slide-fade">
     <section v-if="formOpen" class="flex flex-col">
       <label class="m-1" :for="newCategory.title"> Title </label>
-      <!-- <br /> -->
       <input
         class="border-[0.1rem] rounded-lg p-1 border-accentColor bg-inherit m-1"
         type="text"
@@ -119,15 +113,13 @@ const sendCategory = () => {
       <p class="m-1" v-if="warn">
         {{ warnText }}
       </p>
-      <!-- <br /> -->
       <!-- <label> Image </label>
     <br />
     <input type="url" v-model.trim="newCategory.image" /> -->
-      <!-- <br /> -->
+
       <label class="m-1" for="Label Color">
         <span> Color </span>
 
-        <!-- <br /> -->
         <div class="flex">
           <input
             class="border-[0.1rem] border-r-0 border-accentColor bg-inherit my-1"
@@ -143,7 +135,6 @@ const sendCategory = () => {
           />
         </div>
       </label>
-      <!-- <br /> -->
 
       <button
         @click.prevent="handleForm"
@@ -210,7 +201,6 @@ input[type="color"]:hover {
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  /* transform: translateY(-2px); */
   opacity: 0;
 }
 </style>

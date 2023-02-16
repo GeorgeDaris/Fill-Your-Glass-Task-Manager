@@ -1,7 +1,6 @@
 <script setup>
 import { inject, ref } from "vue";
 import ProgressBar from "./ProgressBar.vue";
-// import EditTodo from "./EditTodo.vue";
 import EditItem from "./EditItem.vue";
 import CategoryLabel from "./CategoryLabel.vue";
 
@@ -12,16 +11,6 @@ const categories = inject("categories");
 const updateTodo = inject("updateTodo");
 
 let btnActive = ref("");
-
-// const showBtns = () => {
-//   btnActive.value === "edit-container-active"
-//     ? (btnActive.value = "")
-//     : (btnActive.value = "edit-container-active");
-
-//   // if (isEditing.value) {
-//   //   btnActive.value = "edit-container-active";
-//   // }
-// };
 
 const showBtns = () => {
   btnActive.value = "edit-container-active";
@@ -50,14 +39,6 @@ const handleCheckbox = () => {
   updateTodo(props.todo.id, undefined, todoChecked.value);
 };
 
-// const summaryCheckbox = ref(null);
-// const handleCheckbox = (todo) => {
-//recreating the checked functionality for checkboxes inside summary tags, as I had set it to "prevent default" to allow the user to type when editing the label, without opening and closing the summary tag while pressing space
-//   summaryCheckbox.value.checked
-//     ? ((summaryCheckbox.value.checked = false), (todo.completed = false))
-//     : ((summaryCheckbox.value.checked = true), (todo.completed = true));
-// };
-
 //Create a seperate editing component to prevent the state from changing for all todos ✔
 //Use <details> and <summary> on todos that have sub tasks to create a collapsable accordion ✔
 //Look into creating a unique label
@@ -71,17 +52,6 @@ const handleCheckbox = () => {
     @mouseleave="hideBtns"
   >
     <!-- checking for the lenght as well, since I'm pushing the subtasks anyway in App.vue, to prevent all todos from appearing inside a details element -->
-    <!-- <summary @keyup.space.prevent class="wid"> -->
-    <!-- prevents the details element from getting toggled while editing a todo -->
-    <!-- <input
-        class="appearance-none border-[0.15rem] rounded-sm p-[0.38rem] border-accentColor bg-inherit checked:bg-accentColor"
-        type="checkbox"
-        :checked="todo.completed"
-        v-model="todo.completed"
-        :id="todo.title"
-        @keyup.space="handleCheckbox(todo)"
-        ref="summaryCheckbox"
-      /> -->
     <button @click="showDetails" class="mr-1 p-1" title="Show sub tasks">
       <svg
         width="16"
@@ -150,18 +120,7 @@ const handleCheckbox = () => {
       @edited="openEditForm"
     ></EditItem>
 
-    <!-- <br /> -->
-    <!-- <span
-      v-if="category.title === todo.category"
-      class="todo-color"
-      :style="{ '--category-color': category.color }"
-      >{{ todo.category }}</span
-    > -->
-    <!--Changing the color of the before element-->
-    <!-- <br /> -->
-    <!-- </summary> -->
     <div class="grid grid-cols-[2.5rem_4fr]">
-      <!-- grid grid-cols-[2.5rem_4fr] -->
       <div
         class="col-start-1 row-start-1"
         v-for="category in categories"
@@ -191,7 +150,6 @@ const handleCheckbox = () => {
                 v-for="task in todo.subTasks"
                 :key="JSON.stringify(task)"
               >
-                <!-- v-for="task in todo.subTasks.slice().reverse()" this shouldn't be needed -->
                 <label :for="task.title" class="inline-flex items-center my-0">
                   <input
                     class="appearance-none border-[0.15rem] rounded-full p-2 border-accentColor bg-inherit cursor-pointer checked:bg-accentColor peer"
@@ -311,7 +269,6 @@ const handleCheckbox = () => {
         {{ category.title }}
       </CategoryLabel>
     </div>
-    <!-- <br /> -->
     <ProgressBar
       v-if="todo.subTasks && todo.subTasks.length > 1"
       :total="todo.subTasks"
@@ -322,16 +279,6 @@ const handleCheckbox = () => {
     >
       {{ todo.description }}
     </p>
-    <!-- <br /> -->
-    <!-- <div v-for="category in categories" :key="JSON.stringify(category)">
-      <span
-        v-if="category.title === todo.category"
-        class="todo-color"
-        :style="{ '--category-color': category.color }"
-        >{{ todo.category }}</span
-      > -->
-    <!--Changing the color of the before element-->
-    <!-- </div> -->
   </div>
 </template>
 
@@ -348,11 +295,6 @@ const handleCheckbox = () => {
 .edit-container-active {
   opacity: 1;
 }
-
-/* body {
-  color: white;
-  background: #36393f;
-} */
 
 .todo-color::before {
   content: "";
@@ -379,35 +321,6 @@ const handleCheckbox = () => {
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  /* transform: translateY(-2px); */
   opacity: 0;
 }
-
-/* summary {
-  list-style: none;
-  position: relative;
-}
-
-summary::before {
-  content: "";
-  width: 0.5rem;
-  height: 0.5rem;
-  display: inline-block;
-  background-image: url(https://vitejs.dev/logo-with-shadow.png);
-  background-repeat: no-repeat;
-  background-color: aqua;
-  position: absolute;
-  top: 0;
-  left: -0.4rem;
-  z-index: 30;
-} */
-
-/* summary::marker {
-  content: url(../assets/details_icon.svg);
-} */
-/* 
-summary:hover::marker {
-  content: url(https://sponsors.vuejs.org/images/vue_jobs.png);
-  transition: all 0.7s;
-} */
 </style>

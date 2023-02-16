@@ -35,14 +35,8 @@ let newTask = ref("");
 let subTaskInput = ref(null);
 
 const addSubTask = async () => {
-  // if (!subTaskOpen.value) {
-  //   subTaskOpen.value = !subTaskOpen.value;
-  //   await nextTick(); //focus management
-  //   subTaskInput.value.focus();
-  // } else
   if (newTask.value) {
     newTodo.subTasks.push({ title: newTask.value });
-    // console.log(newTask.value);
     subTaskWarn.value = false;
     newTask.value = "";
     await nextTick();
@@ -52,11 +46,6 @@ const addSubTask = async () => {
     await nextTick();
     subTaskInput.value.focus();
   }
-  //could need a foreach
-  //newTodo.subTasks.forEach((task) => {
-  //task.push({title: newTask})
-  //})
-  //newTodo.subTasks.push({title: newTask})
 };
 
 const uniqueSubTaskId = computed(() => {
@@ -116,9 +105,8 @@ watch(newTodo, async (newerTodo) => {
       ref="input"
       :class="{ activeForm: formIsOpen }"
     />
-    <!-- <br /> -->
     <span v-if="warn"> Please add a todo item first </span>
-    <!-- <br /> -->
+
     <div>
       <!-- using the div to align it properly for devices with smaller screens, where we set the form and list to be grid containers to justify them to the center. Since it is absolutely positioned it would otherwise breqak out of the intended flow -->
       <Transition name="slide-fade">
@@ -280,7 +268,6 @@ watch(newTodo, async (newerTodo) => {
 
 .slide-fade-enter-from,
 .slide-fade-leave-to {
-  /* transform: translateY(-2px); */
   opacity: 0;
 }
 </style>
