@@ -10,11 +10,13 @@ defineEmits(["delete-todo"]);
 </script>
 
 <template>
-  <section class="col-start-1">
+  <section class="col-start-1 mask">
     <!-- <h4>
       <slot />
     </h4> -->
-    <ul class="pr-1 w-64 h-96 overflow-y-auto scroll-container">
+    <ul
+      class="pr-1 w-64 lg:w-80 h-96 overflow-y-auto scroll-container max-[740px]: max-w-[24rem]"
+    >
       <TransitionGroup name="todos" tag="ul" appear>
         <li
           class="todo-list-item group"
@@ -35,6 +37,12 @@ defineEmits(["delete-todo"]);
 </template>
 
 <style>
+.mask {
+  /* mask-image: linear-gradient(180deg, transparent 0, #000 5% 95%, transparent); */
+  mask-image: linear-gradient(180deg, transparent 0, #000 2% 98%, transparent);
+  border-radius: 0.5rem;
+}
+
 :root {
   --category-color: "#525798";
 }

@@ -7,6 +7,7 @@
 
 :root {
   --secondary: #eaedf5;
+  --accent: #7c94d2;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,8 +18,20 @@
 
 .scroll-container {
   scrollbar-width: thin;
-  scrollbar-color: #7c94d2 var(--secondary);
+  scrollbar-color: var(--accent) var(--secondary);
+
   /* scrollbar-gutter: stable; */
+}
+
+.scroll-container::-webkit-scrollbar {
+  width: 0.5rem;
+  background-color: var(--secondary);
+  border-radius: 2rem;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: #7c94d2;
+  border-radius: 2rem;
 }
 
 .glass progress {

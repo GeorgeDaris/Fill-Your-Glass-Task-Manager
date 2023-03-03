@@ -46,19 +46,20 @@ const handleCheckbox = () => {
 
 <template>
   <div
-    class="hover:opacity-90 transition-opacity duration-300"
+    class="hover:opacity-90 transition-opacity duration-300 flex items-start"
     v-if="todo.subTasks && todo.subTasks.length >= 1"
     @mouseenter="showBtns"
     @mouseleave="hideBtns"
   >
     <!-- checking for the lenght as well, since I'm pushing the subtasks anyway in App.vue, to prevent all todos from appearing inside a details element -->
-    <button @click="showDetails" class="mr-1 p-1" title="Show sub tasks">
+    <button @click="showDetails" class="mr-1 mt-2 p-1" title="Show sub tasks">
       <svg
         width="16"
         height="14"
         viewBox="0 0 108 96"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        role="presentation"
         class="-rotate-90 pb-1NOT mb-0.5 transition-transform duration-300"
         :class="{ 'rotate-0': detailsOpen }"
       >
@@ -70,115 +71,128 @@ const handleCheckbox = () => {
         />
       </svg>
     </button>
-    <label
-      class="inline-flex items-center my-1 relative z-[3]"
-      :for="todo.title"
-      @dblclick="openEditForm"
-    >
-      <input
-        class="appearance-none border-[0.15rem] rounded-md p-2 border-accentColor bg-inherit peer cursor-pointer checked:bg-accentColor peer"
-        type="checkbox"
-        :checked="todo.completed"
-        v-model="todoChecked"
-        :id="todo.id"
-        :name="todo.title"
-        ref="summaryCheckbox"
-        @change="handleCheckbox"
-      />
-      <svg
-        class="absolute ml-1 hidden peer-checked:block pointer-events-none"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 16 12"
-        width="13"
-        height="9"
+    <div>
+      <label
+        class="inline-flex items-centerNOT items-start my-1 relative z-[3]"
+        :for="todo.id"
+        :id="todo.title"
+        @dblclick="openEditForm"
       >
-        <path
-          class="fill-bgColor dark:fill-darkBg"
-          fill="white"
-          d="M 0.375 5.78125 L 1.5625 4.5625 L 5.6875 8.625 L 14.2188 0.124999 L 15.4375 1.34375 L 5.6875 11.0625 L 0.375 5.78125 Z"
+        <input
+          class="appearance-none border-[0.15rem] rounded-md p-2 mt-1 border-accentColor bg-inherit peer cursor-pointer checked:bg-accentColor peer"
+          type="checkbox"
+          :checked="todo.completed"
+          v-model="todoChecked"
+          :id="todo.id"
+          :name="todo.id"
+          ref="summaryCheckbox"
+          @change="handleCheckbox"
         />
-      </svg>
-      <span
-        class="pl-2 peer-checked:line-through peer-checked:opacity-75 transition-all duration-700"
-      >
-        {{ todo.title }}
-      </span>
-    </label>
-    <div class="edit-container absolute right-0 top-0 flex" :class="btnActive">
-      <button @click="openEditForm" @focus="showBtns">
-        {{ editingText }}
-      </button>
-      <button @click="$emit('delete-todo', todo)" @focus="showBtns">
-        Delete
-      </button>
-    </div>
-    <EditItem
-      class="todo-edit-form"
-      :todo="todo"
-      v-if="isEditing"
-      @edited="openEditForm"
-    ></EditItem>
 
-    <div class="grid grid-cols-[2.5rem_4fr]">
+        <svg
+          class="absolute ml-1 mt-[0.6rem] hidden peer-checked:block pointer-events-none"
+          xmlns="http://www.w3.org/2000/svg"
+          role="presentation"
+          fill="none"
+          viewBox="0 0 16 12"
+          width="13"
+          height="9"
+        >
+          <path
+            class="fill-bgColor dark:fill-darkBg"
+            fill="white"
+            d="M 0.375 5.78125 L 1.5625 4.5625 L 5.6875 8.625 L 14.2188 0.124999 L 15.4375 1.34375 L 5.6875 11.0625 L 0.375 5.78125 Z"
+          />
+        </svg>
+        <span
+          class="pl-2 peer-checked:line-through peer-checked:opacity-75 transition-all duration-700"
+        >
+          {{ todo.title }}
+        </span>
+      </label>
       <div
-        class="col-start-1 row-start-1"
-        v-for="category in categories"
-        :key="JSON.stringify(category)"
+        class="edit-container absolute right-0 top-0 flex z-40"
+        :class="btnActive"
       >
-        <CategoryLabel
-          :labelColor="category.color"
-          :has-sub-tasks="true"
-          v-if="category.title === todo.category"
-        >
-          {{ category.title }}
-        </CategoryLabel>
+        <button @click="openEditForm" @focus="showBtns">
+          {{ editingText }}
+        </button>
+        <button @click="$emit('delete-todo', todo)" @focus="showBtns">
+          Delete
+        </button>
       </div>
-      <div class="col-start-2 row-start-1">
-        <ProgressBar :total="todo.subTasks" class=""></ProgressBar>
-        <p
-          v-if="todo.description"
-          class="text-sm p-[0.3rem] bg-lightGrey dark:bg-lightDark m-1 rounded-lg"
+      <EditItem
+        class="todo-edit-form ml-10 mt-1 z-40"
+        :todo="todo"
+        v-if="isEditing"
+        @edited="openEditForm"
+      ></EditItem>
+
+      <div class="grid grid-cols-[2.5rem_4fr] -ml-[0.92rem]">
+        <div
+          class="col-start-1 row-start-1"
+          v-for="category in categories"
+          :key="JSON.stringify(category)"
         >
-          {{ todo.description }}
-        </p>
-        <Transition name="slide-fade">
-          <div v-if="detailsOpen">
-            <ul>
-              <li
-                class="ml-[0.3rem]"
-                v-for="task in todo.subTasks"
-                :key="JSON.stringify(task)"
-              >
-                <label :for="task.title" class="inline-flex items-center my-0">
-                  <input
-                    class="appearance-none border-[0.15rem] rounded-full p-2 border-accentColor bg-inherit cursor-pointer checked:bg-accentColor peer"
-                    type="checkbox"
-                    :checked="task.completed"
-                    v-model="task.completed"
-                    :id="task.title"
-                  />
-                  <svg
-                    class="absolute ml-1 hidden pointer-events-none peer-checked:block"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 16 12"
-                    width="13"
-                    height="9"
-                  >
-                    <path
-                      class="fill-bgColor dark:fill-darkBg"
-                      fill="white"
-                      d="M 0.375 5.78125 L 1.5625 4.5625 L 5.6875 8.625 L 14.2188 0.124999 L 15.4375 1.34375 L 5.6875 11.0625 L 0.375 5.78125 Z"
+          <CategoryLabel
+            :labelColor="category.color"
+            :has-sub-tasks="true"
+            v-if="category.title === todo.category"
+          >
+            {{ category.title }}
+          </CategoryLabel>
+        </div>
+        <div class="col-start-2 row-start-1">
+          <ProgressBar
+            :total="todo.subTasks"
+            :todo="todo"
+            class=""
+          ></ProgressBar>
+          <p
+            v-if="todo.description"
+            class="text-sm p-[0.3rem] bg-lightGrey dark:bg-lightDark m-1 rounded-md"
+          >
+            {{ todo.description }}
+          </p>
+          <Transition name="slide-fade">
+            <div v-if="detailsOpen">
+              <ul>
+                <li
+                  class="ml-[0.3rem]"
+                  v-for="task in todo.subTasks"
+                  :key="JSON.stringify(task)"
+                >
+                  <label :for="task.id" class="inline-flex items-start my-0">
+                    <input
+                      class="appearance-none border-[0.15rem] rounded-full p-2 mt-1 border-accentColor bg-inherit cursor-pointer checked:bg-accentColor peer"
+                      type="checkbox"
+                      :checked="task.completed"
+                      v-model="task.completed"
+                      :id="task.id"
+                      :name="task.id"
                     />
-                  </svg>
-                  <span
-                    class="pl-2 peer-checked:line-through peer-checked:opacity-75 transition-all duration-700"
-                  >
-                    {{ task.title }}
-                  </span>
-                </label>
-                <!-- <div class="edit-container" :class="btnActive">
+                    <svg
+                      class="absolute ml-1 mt-[0.6rem] hidden pointer-events-none peer-checked:block"
+                      xmlns="http://www.w3.org/2000/svg"
+                      role="presentation"
+                      fill="none"
+                      viewBox="0 0 16 12"
+                      width="13"
+                      height="9"
+                    >
+                      <path
+                        class="fill-bgColor dark:fill-darkBg"
+                        fill="white"
+                        d="M 0.375 5.78125 L 1.5625 4.5625 L 5.6875 8.625 L 14.2188 0.124999 L 15.4375 1.34375 L 5.6875 11.0625 L 0.375 5.78125 Z"
+                      />
+                    </svg>
+                    <span
+                      class="pl-2 peer-checked:line-through peer-checked:opacity-75 transition-all duration-700"
+                    >
+                      {{ task.title }}
+                    </span>
+                  </label>
+                  <!-- <div class="edit-container" :class="btnActive">
           <button @click="openEditForm" @focus="showBtns">
             {{ editingText }}
           </button>
@@ -192,10 +206,11 @@ const handleCheckbox = () => {
           v-if="isEditing"
           @edited="openEditForm"
         ></EditItem> -->
-              </li>
-            </ul>
-          </div>
-        </Transition>
+                </li>
+              </ul>
+            </div>
+          </Transition>
+        </div>
       </div>
     </div>
   </div>
@@ -208,27 +223,29 @@ const handleCheckbox = () => {
     @mouseleave="hideBtns"
   >
     <label
-      class="inline-flex items-center my-1"
-      :for="todo.title"
+      class="inline-flex items-centerNOT items-start my-1 relative z-[3]"
+      :for="todo.id"
       @dblclick="openEditForm"
     >
       <input
-        class="appearance-none border-[0.15rem] rounded-md p-2 border-accentColor bg-inherit cursor-pointer hover:border-accentLight checked:bg-accentColor peer"
+        class="appearance-none border-[0.15rem] rounded-md p-2 mt-1 border-accentColor bg-inherit peer cursor-pointer checked:bg-accentColor peer"
         type="checkbox"
         :checked="todo.completed"
         v-model="todoChecked"
         :id="todo.id"
-        :name="todo.title"
+        :name="todo.id"
         ref="summaryCheckbox"
         @change="handleCheckbox"
       />
+
       <svg
-        class="absolute ml-1 hidden pointer-events-none peer-checked:block"
+        class="absolute ml-1 mt-[0.6rem] hidden peer-checked:block pointer-events-none"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 16 12"
         width="13"
         height="9"
+        role="presentation"
       >
         <path
           class="fill-bgColor dark:fill-darkBg"
@@ -275,7 +292,7 @@ const handleCheckbox = () => {
     ></ProgressBar>
     <p
       v-if="todo.description"
-      class="text-sm p-[0.3rem] bg-lightGrey dark:bg-lightDark m-1 rounded-lg ml-[1.7rem]"
+      class="text-sm p-[0.3rem] bg-lightGrey dark:bg-lightDark m-1 rounded-md ml-[1.7rem]"
     >
       {{ todo.description }}
     </p>

@@ -93,13 +93,15 @@ watch(newTodo, async (newerTodo) => {
   <form class="relative">
     <!--<pre>{{newTodo}}
     </pre>-->
-    <label class="text-lg font-semibold">
+    <label for="todo" class="text-lg font-semibold">
       {{ todoInfo.question }}
     </label>
     <br />
     <input
-      class="title-input border-[0.2rem] rounded-lg p-1 pl-2 border-accentColor w-64 bg-inherit transition-all duration-100 hover:border-accentLight"
+      class="title-input border-[0.2rem] rounded-md p-1 pl-2 border-accentColor w-64 lg:w-80 bg-inherit transition-all duration-100 hover:border-accentLight"
       :placeholder="todoInfo.placeholder"
+      name="todo"
+      id="todo"
       type="text"
       v-model.trim="newTodo.title"
       ref="input"
@@ -111,35 +113,40 @@ watch(newTodo, async (newerTodo) => {
       <!-- using the div to align it properly for devices with smaller screens, where we set the form and list to be grid containers to justify them to the center. Since it is absolutely positioned it would otherwise breqak out of the intended flow -->
       <Transition name="slide-fade">
         <div
-          class="flex flex-col justify-between border-[0.2rem] rounded-lg rounded-t-none p-1 border-accentColor w-64 max-h-[28rem] overflow-auto bg-bgColor dark:bg-darkBg absolute z-[4] top-[4.1rem] scroll-container shadow-[0.3rem_0.3rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.3rem_0.3rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
+          class="flex flex-col justify-between border-[0.2rem] rounded-md rounded-t-none p-1 border-accentColor w-64 lg:w-80 max-h-[28rem] overflow-auto bg-bgColor dark:bg-darkBg absolute z-[4] top-[4.1rem] scroll-container shadow-[0.3rem_0.3rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.3rem_0.3rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
           v-show="newTodo.title"
         >
-          <label class="m-1">
+          <label class="m-1" for="description">
             {{ todoInfo.description }}
           </label>
           <!-- <br /> -->
           <textarea
-            class="border-[0.1rem] rounded-lg p-1 border-accentColor bg-inherit m-1 resize-none scroll-container"
+            class="flex-shrink-0 border-[0.1rem] rounded-md p-1 border-accentColor bg-inherit m-1 resize-none scroll-container"
             placeholder="Use the three first chapters to showcase the use of literary devices"
+            name="description"
+            id="description"
             v-model.trim="newTodo.description"
           ></textarea>
           <!-- <br /> -->
           <section>
             <div class="flex flex-col">
-              <label class="m-1"> Sub-task </label>
+              <label class="m-1" for="subtask" id="sub-task"> Sub-task </label>
               <!-- <br /> -->
               <div class="relative flex flex-col">
                 <input
-                  class="border-[0.1rem] rounded-lg p-1 border-accentColor over bg-inherit m-1"
+                  class="border-[0.1rem] rounded-md p-1 pr-10 border-accentColor over bg-inherit m-1"
                   :placeholder="todoInfo.placeholder"
+                  name="subtask"
+                  id="subtask"
                   type="text"
                   v-model.trim="newTask"
                   ref="subTaskInput"
                 />
                 <button
-                  class="absolute bottom-[0.27rem] right-1 w-[2.2rem] h-[2.2rem] z-[4] rounded-lg rounded-l-none bg-accentColor text-bgColor text-xl font-bold flex items-center justify-center transition-colors duration-3d00 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
+                  class="absolute bottom-[0.27rem] right-1 w-[2.2rem] h-[2.2rem] z-[4] rounded-md rounded-l-none bg-accentColor text-bgColor text-xl font-bold flex items-center justify-center transition-colors duration-3d00 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
                   @click.prevent="addSubTask"
-                  aria-describedby="'subtask'"
+                  aria-describedby="sub-task"
+                  title="add sub-task"
                 >
                   <svg
                     class=""
@@ -148,6 +155,7 @@ watch(newTodo, async (newerTodo) => {
                     viewBox="0 0 34 34"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    role="presentation"
                   >
                     <rect
                       class="fill-bgColor dark:fill-darkBg"
@@ -189,7 +197,12 @@ watch(newTodo, async (newerTodo) => {
             <h3>
               {{ todoInfo.category.title }}
             </h3>
-            <ul class="flex">
+            <!-- <hr
+              class="bg-lightGrey dark:bg-lightDark h-[0.15rem] border-none rounded-full -my-3 mt-2"
+            /> -->
+            <ul
+              class="flex flex-row justNOTify-center overflow-x-auto overflow-y-hidden gap-4 max-h-32 scroll-container"
+            >
               <li v-for="category in categories" :key="category.id">
                 <!-- <div
                 class="color-indicator"
@@ -198,21 +211,29 @@ watch(newTodo, async (newerTodo) => {
               <label :for="category.title">
                 {{ category.title }}
               </label> -->
-                <CategoryLabel
-                  :labelColor="category.color"
-                  :has-sub-tasks="false"
-                  v-if="category.title === category.title"
-                  class="m-0"
-                >
-                  {{ category.title }}
-                </CategoryLabel>
-                <input
-                  name="category"
-                  type="radio"
-                  :value="category.title"
-                  v-model="newTodo.category"
-                  :id="category.title"
-                />
+
+                <label :for="category.title">
+                  <CategoryLabel
+                    :labelColor="category.color"
+                    :is-radio-button="true"
+                    v-if="category.title === category.title"
+                    class="m-0"
+                  >
+                    <template #input>
+                      <input
+                        name="category"
+                        type="radio"
+                        :value="category.title"
+                        v-model="newTodo.category"
+                        :id="category.title"
+                        class="absolute top-[1.2rem] left-[0.17rem] appearance-none w-2 h-2 rounded-full bg-bgColor checked:bg-accentColor z-[0] dark:bg-darkBg"
+                      />
+                    </template>
+                    <template #name>
+                      {{ category.title }}
+                    </template>
+                  </CategoryLabel>
+                </label>
               </li>
             </ul>
             <!--<label> Simplified it with a v-for
@@ -227,7 +248,7 @@ watch(newTodo, async (newerTodo) => {
           <CreateCategory @send-category="sendCategory"></CreateCategory>
           <!-- <br /> -->
           <button
-            class="p-1 m-1 bg-accentColor rounded-lg hover:bg-accentLight text-bgColor dark:text-darkBg"
+            class="p-1 m-1 bg-accentColor rounded-md hover:bg-accentLight text-bgColor dark:text-darkBg"
             @click.enter.prevent="sendTodo"
           >
             {{ todoInfo.button }}

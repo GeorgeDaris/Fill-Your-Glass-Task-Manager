@@ -52,8 +52,10 @@ const sendCategory = () => {
 
 <template>
   <button
-    class="w-[2.2rem] h-[2.2rem] z-[4] rounded-lg bg-accentColor text-bgColor text-xl font-bold flex items-center justify-center transition-colors duration-300 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
+    class="w-[2.2rem] h-[2.2rem] z-[4] rounded-md bg-accentColor text-bgColor text-xl font-bold flex items-center justify-center flex-shrink-0 transition-colors duration-300 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
     @click.prevent="openForm"
+    title="add a new category"
+    id="add-category"
   >
     <svg
       class=""
@@ -61,6 +63,8 @@ const sendCategory = () => {
       height="20"
       viewBox="0 0 34 34"
       fill="none"
+      role="presentation"
+      aria-labelledby="add-category"
       xmlns="http://www.w3.org/2000/svg"
       v-if="!formOpen"
     >
@@ -102,12 +106,13 @@ const sendCategory = () => {
   </button>
   <Transition name="slide-fade">
     <section v-if="formOpen" class="flex flex-col">
-      <label class="m-1" :for="newCategory.title"> Title </label>
+      <label class="m-1" for="Category"> Title </label>
       <input
-        class="border-[0.1rem] rounded-lg p-1 border-accentColor bg-inherit m-1"
+        class="border-[0.1rem] rounded-md p-1 border-accentColor bg-inherit m-1"
         type="text"
         v-model.trim="newCategory.title"
-        :id="newCategory.title"
+        id="Category"
+        name="Category"
         ref="inputTitle"
       />
       <p class="m-1" v-if="warn">
@@ -117,7 +122,7 @@ const sendCategory = () => {
     <br />
     <input type="url" v-model.trim="newCategory.image" /> -->
 
-      <label class="m-1" for="Label Color">
+      <label class="m-1" for="color">
         <span> Color </span>
 
         <div class="flex">
@@ -125,20 +130,22 @@ const sendCategory = () => {
             class="border-[0.1rem] border-r-0 border-accentColor bg-inherit my-1"
             type="color"
             v-model.trim="newCategory.color"
-            id="Label Color"
+            id="color"
+            name="color"
           />
           <input
-            class="w-44 border-[0.1rem] rounded-lg rounded-l-none p-1 border-accentColor bg-inherit my-1"
+            class="w-20 border-[0.1rem] rounded-md rounded-l-none p-1 border-accentColor bg-inherit my-1"
             type="text"
+            name="color"
             v-model.trim="newCategory.color"
-            id="Label Color"
+            id="color"
           />
         </div>
       </label>
 
       <button
         @click.prevent="handleForm"
-        class="p-1 m-1 mb-2 bg-accentColor rounded-lg hover:bg-accentLight text-bgColor dark:text-darkBg"
+        class="p-1 m-1 mb-2 bg-accentColor rounded-md hover:bg-accentLight text-bgColor dark:text-darkBg"
       >
         Add category
       </button>
