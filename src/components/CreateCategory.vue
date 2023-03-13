@@ -52,7 +52,7 @@ const sendCategory = () => {
 
 <template>
   <button
-    class="w-[2.2rem] h-[2.2rem] z-[4] rounded-md bg-accentColor text-bgColor text-xl font-bold flex items-center justify-center flex-shrink-0 transition-colors duration-300 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
+    class="w-[2.2rem] h-[2.2rem] m-1 z-[4] rounded-md bg-accentColor text-bgColor text-xl font-bold flex items-center justify-center flex-shrink-0 transition-colors duration-300 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
     @click.prevent="openForm"
     title="add a new category"
     id="add-category"

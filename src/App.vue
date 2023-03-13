@@ -1,14 +1,8 @@
 <script setup>
-import {
-  computed,
-  reactive,
-  provide,
-  onBeforeMount,
-  watch,
-  onMounted,
-} from "vue";
+import { computed, reactive, provide, watch, ref } from "vue";
 import AddTodo from "./components/AddTodo.vue";
 import TodoListNew from "./components/TodoListNew.vue";
+// import ArchiveForm from ".components/ArchiveForm.vue";
 
 import ProgressBar from "./components/ProgressBar.vue";
 
@@ -69,8 +63,13 @@ if (localStorage.todos) {
 // });
 
 const todosCompleted = computed(() => {
-  const completedTodos = todos.filter((item) => item.completed).length;
-  return `${completedTodos} of ${todos.length} completed`;
+  let completedTodos = todos.filter((item) => item.completed).length;
+  // return `${completedTodos} of ${todos.length} completed`;
+  if (completedTodos < 2) {
+    return `Archive ${completedTodos} task`;
+  } else {
+    return `Archive ${completedTodos} tasks`;
+  }
 });
 
 const addTodo = (newTodo) => {
@@ -120,15 +119,41 @@ const updateTodo = (todoId, newTitle, checkStatus) => {
 
 provide("updateTodo", updateTodo); //for the EditItem component
 
+const shiftTodos = (itemIndex, currentItem, itemToMove, currentIndex) => {
+  // todos.splice(itemIndex, 1, currentItem);
+  // todos.splice(currentIndex, 1, itemToMove);
+  // currentIndex = currentIndex--;
+  // todos.splice(currentIndex, 1, itemToMove);
+  // todos.splice(currentIndex, 1, itemToMove.title);
+
+  //currently swaps them
+  [todos[itemIndex], todos[currentIndex]] = [
+    todos[currentIndex],
+    todos[itemIndex],
+  ];
+
+  console.log(itemToMove, currentIndex);
+};
+
+provide("shiftTodos", shiftTodos);
+
+let showArchiveButton = ref();
 //changing the todos localStorage item every time a change occurs
 watch(
   todos,
   (newValue) => {
     localStorage.setItem("todos", JSON.stringify(newValue));
     console.log(newValue);
+
+    if (todos.filter((item) => item.completed).length > 0) {
+      showArchiveButton.value = true;
+    } else {
+      showArchiveButton.value = false;
+    }
   },
   {
     deep: true,
+    immediate: true,
   }
 );
 
@@ -138,7 +163,7 @@ if (localStorage.categories) {
   storedCategories.forEach((category) => {
     categories.push(category);
   });
-  console.log(todos);
+  // console.log(todos);
 } else {
   categories = reactive([
     {
@@ -182,6 +207,7 @@ watch(
 
 <template>
   <main class="">
+    <!-- <nav class="absolute top-0 bg-accentColor width-full">test</nav> -->
     <!-- <header>-->
     <!-- <pre>
         {{ todos }}
@@ -192,16 +218,23 @@ watch(
         </h1>
       </header> -->
     <div
-      class="grid md:grid-cols-[minmax(5rem,_1.5fr)_minmax(7rem,_2fr)] justify-center gap-4 md:gap-x-20 lg:gap-x-28 xl:gap-x-32 mt-12 md:m-0 md:"
+      class="grid md:grid-cols-[minmax(5rem,_1.5fr)_minmax(7rem,_2fr)] justify-center gap-4 grid-cols-1 md:gap-x-20 lg:gap-x-28 xl:gap-x-32 mt-12 mx-4 md:m-0 md:"
     >
       <AddTodo
         @add-todo="addTodo"
         @add-category="addCategory"
         :categories="categories"
       />
-      <TodoListNew :todos="todos" @delete-todo="deleteTodo">{{
-        todosCompleted
-      }}</TodoListNew>
+      <TodoListNew :todos="todos" @delete-todo="deleteTodo">
+        <Transition name="slide-fade">
+          <button
+            v-if="showArchiveButton"
+            class="p-1 m-1 mt-4 w-[60%] my-0 mx-auto bg-accentColor rounded-md hover:bg-accentLight text-bgColor dark:text-darkBg"
+          >
+            <span>{{ todosCompleted }} </span>
+          </button>
+        </Transition>
+      </TodoListNew>
       <ProgressBar
         class="glass"
         :total="todos"

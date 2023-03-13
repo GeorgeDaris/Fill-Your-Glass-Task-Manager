@@ -1,104 +1,22 @@
-<!-- eslint-disable prettier/prettier -->
 <script setup>
-import { ref, reactive, computed, nextTick, watch } from "vue";
-import CreateCategory from "./CreateCategory.vue";
-import ToolTip from "./ToolTip.vue";
-import CategoryLabel from "./CategoryLabel.vue";
+import { reactive } from "vue";
 
-defineProps(["categories"]);
-const emit = defineEmits(["add-todo", "add-category"]);
-
-const todoInfo = ref({
-  question: "What needs to be done?",
-  placeholder: "E.g Write an essay on Kazantzakis' vocabulary",
-  description: "Description",
-  category: {
-    title: "Category",
-    work: "Work",
-    personal: "Personal",
-  },
-  button: "Add to-do",
-});
-
-const newTodo = reactive({
+let newEntry = reactive({
   title: "",
-  description: "",
-  category: "",
-  subTasks: [],
-});
-
-let warn = ref(false);
-let subTaskOpen = ref(false);
-let subTaskWarnMessage = ref("Please enter a sub task first");
-let subTaskWarn = ref(false);
-let newTask = ref("");
-let subTaskInput = ref(null);
-
-const addSubTask = async () => {
-  if (newTask.value) {
-    newTodo.subTasks.push({ title: newTask.value });
-    subTaskWarn.value = false;
-    newTask.value = "";
-    await nextTick();
-    subTaskInput.value.focus();
-  } else {
-    subTaskWarn.value = true;
-    await nextTick();
-    subTaskInput.value.focus();
-  }
-};
-
-const uniqueSubTaskId = computed(() => {
-  return Date.now + Math.random();
-});
-
-const reversedSubTasks = computed(() => {
-  return newTodo.subTasks.slice().reverse();
-});
-
-let input = ref(null); //accesing the input element
-
-const sendTodo = async () => {
-  if (newTodo.title) {
-    emit("add-todo", newTodo);
-    newTodo.title = "";
-    newTodo.description = "";
-    newTodo.category = "";
-    newTodo.subTasks = [];
-
-    await nextTick();
-    input.value.focus();
-    warn.value = false;
-    subTaskOpen.value = false;
-  } else {
-    warn.value = true;
-    input.value.focus();
-  }
-};
-
-const sendCategory = (newCategory) => {
-  //bubbling up the emitted event from CreateCategory
-  emit("add-category", newCategory);
-};
-
-let formIsOpen = ref(false);
-
-watch(newTodo, async (newerTodo) => {
-  //conditionally changing the border radius when the user starts typing
-  newerTodo.title ? (formIsOpen.value = true) : (formIsOpen.value = false);
+  notes: "",
+  tasks: [{}],
+  date: "",
 });
 </script>
 
 <template>
   <form class="relative" autocomplete="off">
-    <!--<pre>{{newTodo}}
-    </pre>-->
     <label for="todo" class="text-lg font-semibold">
       {{ todoInfo.question }}
     </label>
     <br />
     <input
-      class="title-input border-[0.2rem] rounded-md p-1 pl-2 border-accentColor w-64 lg:w-80 bg-inherit transition-all duration-100 hover:border-accentLight max-[740px]:w-full"
+      class="title-input border-[0.2rem] rounded-md p-1 pl-2 border-accentColor w-64 lg:w-80 bg-inherit transition-all duration-100 hover:border-accentLight"
       :placeholder="todoInfo.placeholder"
       name="todo"
       id="todo"
@@ -113,7 +31,7 @@ watch(newTodo, async (newerTodo) => {
       <!-- using the div to align it properly for devices with smaller screens, where we set the form and list to be grid containers to justify them to the center. Since it is absolutely positioned it would otherwise breqak out of the intended flow -->
       <Transition name="slide-fade">
         <div
-          class="flex flex-col justify-between border-[0.2rem] rounded-md rounded-t-none p-1 border-accentColor w-64 lg:w-80 max-h-[28rem] overflow-auto bg-bgColor max-[740px]:w-full dark:bg-darkBg absolute z-[4] top-[4.1rem] scroll-container shadow-[0.3rem_0.3rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.3rem_0.3rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
+          class="flex flex-col justify-between border-[0.2rem] rounded-md rounded-t-none p-1 border-accentColor w-64 lg:w-80 max-h-[28rem] overflow-auto bg-bgColor dark:bg-darkBg absolute z-[4] top-[4.1rem] scroll-container shadow-[0.3rem_0.3rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.3rem_0.3rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
           v-show="newTodo.title"
         >
           <label class="m-1" for="description">
@@ -259,37 +177,3 @@ watch(newTodo, async (newerTodo) => {
     </div>
   </form>
 </template>
-
-<style scoped>
-.title-input:focus {
-  outline: none;
-}
-.color-indicator {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  /*background-color: v-bind('categories[1].color');*/
-  border-radius: 50%;
-  margin-right: 1rem;
-}
-
-.activeForm {
-  /*gets used when the user starts typing*/
-  border-bottom-left-radius: unset;
-  border-bottom-right-radius: unset;
-  transition: all 0.1s;
-}
-
-.slide-fade-enter-active {
-  transition: all 0.3s ease-out;
-}
-
-.slide-fade-leave-active {
-  transition: all 0.3s ease-out;
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  opacity: 0;
-}
-</style>

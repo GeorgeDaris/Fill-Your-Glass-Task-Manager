@@ -150,7 +150,7 @@ const handleCheckbox = () => {
           ></ProgressBar>
           <p
             v-if="todo.description"
-            class="text-sm p-[0.3rem] bg-lightGrey dark:bg-lightDark m-1 rounded-md"
+            class="text-sm p-[0.3rem] bg-lightGrey whitespace-pre-wrap dark:bg-lightDark m-1 rounded-md"
           >
             {{ todo.description }}
           </p>
@@ -292,7 +292,7 @@ const handleCheckbox = () => {
     ></ProgressBar>
     <p
       v-if="todo.description"
-      class="text-sm p-[0.3rem] bg-lightGrey dark:bg-lightDark m-1 rounded-md ml-[1.7rem]"
+      class="text-sm p-[0.3rem] bg-lightGrey whitespace-pre-wrap dark:bg-lightDark m-1 rounded-md ml-[1.7rem]"
     >
       {{ todo.description }}
     </p>

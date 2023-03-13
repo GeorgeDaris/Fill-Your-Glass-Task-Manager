@@ -11,7 +11,7 @@ defineProps(["total", "todo", "glass", "tube"]);
       role="progressbar"
       :aria-valuemax="total.length"
       :aria-valuenow="total.filter((item) => item.completed).length"
-      class="glass-of-waves flex overflow-hidden bg-lightGreyNOT bg-gradient-to-bl from-bgColor to-accentLight via-lightGrey h-80 w-80 rounded-full rNOTounded-t-lg relative dark:bg-lightDarkNOT dark:bg-gradient-to-tr dark:from-[#101217] dark:to-lightDark dark:via-darkBg max-[740px]:w-64 max-[740px]:h-64"
+      class="glass-of-waves flex overflow-hidden bg-lightGreyNOT bg-gradient-to-bl from-bgColor to-accentLight via-lightGrey h-80 w-80 rounded-full rNOTounded-t-lg relative dark:bg-lightDarkNOT dark:bg-gradient-to-tr dark:from-[#101217] dark:to-lightDark dark:via-darkBg max-[740px]:w-64NOT max-[740px]:h-64NOT"
     >
       <svg
         :style="{
