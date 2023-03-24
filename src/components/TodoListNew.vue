@@ -1,5 +1,6 @@
 <script setup>
-import { inject, watch } from "vue";
+import { inject, provide, ref } from "vue";
+import ArchiveForm from "./ArchiveForm.vue";
 import TodoItem from "./TodoItem.vue";
 
 const props = defineProps(["todos"]);
@@ -38,12 +39,13 @@ const onDrop = (evt, currentItem) => {
   // console.log(evt.dataTransfer.getData("ItemIndex"));
 };
 
-// const showArchiveButton = computed(() => {
-//   let completedTodos = props.todos.filter((item) => item.completed.length);
-//   // if (completedTodos > 0) {
-//   return completedTodos;
-//   // }
-// });
+let showArchiveButton = inject("showArchiveButton");
+
+let archiveFormOpen = ref(false);
+
+const openArchiveForm = () => {
+  archiveFormOpen.value = !archiveFormOpen.value;
+};
 
 //Create a seperate editing component to prevent the state from changing for all todos ✔
 //Use <details> and <summary> on todos that have sub tasks to create a collapsable accordion ✔
@@ -51,7 +53,7 @@ const onDrop = (evt, currentItem) => {
 </script>
 
 <template>
-  <div class="col-start-1 grid max-[740px]:w-full">
+  <div class="col-start-1 grid relative max-[740px]:w-full">
     <section class="col-start-1 mask">
       <!-- <h4>
       <slot />
@@ -73,6 +75,8 @@ const onDrop = (evt, currentItem) => {
               @dragover.prevent
               @dragenter.prevent
               @drop="onDrop($event, todo)"
+              @touchstart="startDrag($event, todo)"
+              @touchend="onDrop($event, todo)"
             ></TodoItem>
             <hr
               class="bg-lightGrey dark:bg-lightDark h-[0.15rem] border-none rounded-full my-1 mt-2 group-last:hidden group-even:bg-hrOdd dark:group-even:bg-hrDarkOdd"
@@ -86,14 +90,24 @@ const onDrop = (evt, currentItem) => {
         </TransitionGroup>
       </ul>
     </section>
-    <!-- <button
-      class="p-1 m-1 mt-4 w-[60%] my-0 mx-auto bg-accentColor rounded-md hover:bg-accentLight text-bgColor dark:text-darkBg"
-    >
-      <span>
+    <Transition name="slide-fade">
+      <button
+        v-if="showArchiveButton"
+        @click="openArchiveForm"
+        class="archive-button p-1 m-1 mt-4 w-[60%] my-0 mx-auto bg-accentColor rounded-md hover:bg-accentLight text-bgColor dark:text-darkBg"
+      >
         <slot />
-      </span>
-    </button> -->
-    <slot />
+      </button>
+    </Transition>
+    <!-- <Teleport to="body"> -->
+    <Transition name="slide-fade-top">
+      <ArchiveForm
+        :todos="todos"
+        v-if="archiveFormOpen"
+        @closeForm="openArchiveForm"
+      ></ArchiveForm>
+    </Transition>
+    <!-- </Teleport> -->
   </div>
 </template>
 
@@ -141,5 +155,19 @@ const onDrop = (evt, currentItem) => {
 .todos-leave-to {
   opacity: 0;
   transform: translateX(-60px);
+}
+
+.slide-fade-top-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-top-leave-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-top-enter-from,
+.slide-fade-top-leave-to {
+  opacity: 0;
+  transform: translateY(2rem);
 }
 </style>

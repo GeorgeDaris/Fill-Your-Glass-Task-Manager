@@ -24,6 +24,7 @@ const newTodo = reactive({
   title: "",
   description: "",
   category: "",
+  archived: "",
   subTasks: [],
 });
 

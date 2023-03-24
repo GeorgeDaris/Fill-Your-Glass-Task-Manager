@@ -2,7 +2,7 @@
 import { computed, reactive, provide, watch, ref } from "vue";
 import AddTodo from "./components/AddTodo.vue";
 import TodoListNew from "./components/TodoListNew.vue";
-// import ArchiveForm from ".components/ArchiveForm.vue";
+// import ArchiveForm from "./components/ArchiveForm.vue";
 
 import ProgressBar from "./components/ProgressBar.vue";
 
@@ -22,6 +22,7 @@ if (localStorage.todos) {
       title: "Make it work",
       category: "Personal",
       completed: true,
+      archived: false,
     },
     {
       id: 0,
@@ -29,6 +30,7 @@ if (localStorage.todos) {
       description: "test",
       category: "Personal",
       completed: false,
+      archived: false,
       subTasks: [
         {
           id: 0,
@@ -63,7 +65,10 @@ if (localStorage.todos) {
 // });
 
 const todosCompleted = computed(() => {
-  let completedTodos = todos.filter((item) => item.completed).length;
+  //only if they haven't been archived yet
+  let completedTodos = todos.filter(
+    (item) => item.completed && !item.archived
+  ).length;
   // return `${completedTodos} of ${todos.length} completed`;
   if (completedTodos < 2) {
     return `Archive ${completedTodos} task`;
@@ -79,6 +84,7 @@ const addTodo = (newTodo) => {
     title: newTodo.title,
     description: newTodo.description,
     category: newTodo.category,
+    archived: false,
     subTasks: newTodo.subTasks,
   });
 };
@@ -105,12 +111,15 @@ const deleteTodo = (todoToDelete) => {
   todos.splice(todoIndex, 1);
 };
 
-const updateTodo = (todoId, newTitle, checkStatus) => {
+const updateTodo = (todoId, newTitle, checkStatus, archiveStatus) => {
   let todoToEdit = todos.find((item) => item.id === todoId);
 
   if (newTitle) {
     //in case we are updating the title
     todoToEdit.title = newTitle;
+  } else if (archiveStatus) {
+    //or archiving a completed task
+    todoToEdit.archived = archiveStatus;
   } else {
     //or just toggling the checkbox
     todoToEdit.completed = checkStatus;
@@ -138,6 +147,7 @@ const shiftTodos = (itemIndex, currentItem, itemToMove, currentIndex) => {
 provide("shiftTodos", shiftTodos);
 
 let showArchiveButton = ref();
+provide("showArchiveButton", showArchiveButton);
 //changing the todos localStorage item every time a change occurs
 watch(
   todos,
@@ -145,7 +155,7 @@ watch(
     localStorage.setItem("todos", JSON.stringify(newValue));
     console.log(newValue);
 
-    if (todos.filter((item) => item.completed).length > 0) {
+    if (todos.filter((item) => item.completed && !item.archived).length > 0) {
       showArchiveButton.value = true;
     } else {
       showArchiveButton.value = false;
@@ -203,16 +213,60 @@ watch(
     deep: true,
   }
 );
+
+let archive = reactive([]);
+
+if (localStorage.archive) {
+  let storedEntries = JSON.parse(localStorage.archive);
+  storedEntries.forEach((entry) => {
+    archive.push(entry);
+  });
+} else {
+  archive = reactive([
+    {
+      id: "",
+      title: "",
+      notes: "",
+      tasks: [],
+      date: {
+        year: "",
+        month: "",
+        day: "",
+        weekday: "",
+        hour: "",
+        minutes: "",
+      },
+    },
+  ]);
+}
+
+watch(
+  archive,
+  (newValue) => {
+    localStorage.setItem("archive", JSON.stringify(newValue));
+  },
+  {
+    deep: true,
+  }
+);
+
+const addArchiveEntry = (newEntry) => {
+  archive.push(newEntry);
+};
+
+provide("archive", archive);
+provide("addArchiveEntry", addArchiveEntry);
 </script>
 
 <template>
   <main class="">
     <!-- <nav class="absolute top-0 bg-accentColor width-full">test</nav> -->
     <!-- <header>-->
-    <!-- <pre>
-        {{ todos }}
-        {{ data }}
-        </pre> -->
+    <!-- <pre> -->
+    <!-- {{ todos }}
+        {{ data }} -->
+    <!-- {{ archive }} -->
+    <!-- </pre> -->
     <!-- <h1>
           {{ title }}
         </h1>
@@ -226,15 +280,9 @@ watch(
         :categories="categories"
       />
       <TodoListNew :todos="todos" @delete-todo="deleteTodo">
-        <Transition name="slide-fade">
-          <button
-            v-if="showArchiveButton"
-            class="p-1 m-1 mt-4 w-[60%] my-0 mx-auto bg-accentColor rounded-md hover:bg-accentLight text-bgColor dark:text-darkBg"
-          >
-            <span>{{ todosCompleted }} </span>
-          </button>
-        </Transition>
+        <span>{{ todosCompleted }} </span>
       </TodoListNew>
+      <!-- <ArchiveForm :todos="todos"></ArchiveForm> -->
       <ProgressBar
         class="glass"
         :total="todos"

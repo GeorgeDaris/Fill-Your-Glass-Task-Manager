@@ -37,6 +37,8 @@ let todoChecked = ref(props.todo.completed);
 
 const handleCheckbox = () => {
   updateTodo(props.todo.id, undefined, todoChecked.value);
+  // updateTodo({ todoId: props.todo.id, checkStatus: todoChecked.value });
+  // todoId, newTitle, archiveStatus, checkStatus
 };
 
 //Create a seperate editing component to prevent the state from changing for all todos ✔
@@ -48,6 +50,11 @@ const handleCheckbox = () => {
   <div
     class="hover:opacity-90 transition-opacity duration-300 flex items-start"
     v-if="todo.subTasks && todo.subTasks.length >= 1"
+    :class="[
+      todo.archived
+        ? ['opacity-70', 'border-l-2', 'border-accentColor', 'pl-2']
+        : '',
+    ]"
     @mouseenter="showBtns"
     @mouseleave="hideBtns"
   >
@@ -85,10 +92,10 @@ const handleCheckbox = () => {
           v-model="todoChecked"
           :id="todo.id"
           :name="todo.id"
+          :disabled="todo.archived"
           ref="summaryCheckbox"
           @change="handleCheckbox"
         />
-
         <svg
           class="absolute ml-1 mt-[0.6rem] hidden peer-checked:block pointer-events-none"
           xmlns="http://www.w3.org/2000/svg"
@@ -167,6 +174,7 @@ const handleCheckbox = () => {
                       class="appearance-none border-[0.15rem] rounded-full p-2 mt-1 border-accentColor bg-inherit cursor-pointer checked:bg-accentColor peer"
                       type="checkbox"
                       :checked="task.completed"
+                      :disabled="todo.archived"
                       v-model="task.completed"
                       :id="task.id"
                       :name="task.id"
@@ -215,10 +223,16 @@ const handleCheckbox = () => {
     </div>
   </div>
 
+  <!-- :class="{'opacity-70': todo.archived, 'border': todo.archived }" -->
   <div
     v-else
     draggable="true"
     class="hover:opacity-90 transition-opacity duration-300"
+    :class="[
+      todo.archived
+        ? ['opacity-70', 'border-l-2', 'border-accentColor', 'pl-2']
+        : '',
+    ]"
     @mouseenter="showBtns"
     @mouseleave="hideBtns"
   >
@@ -232,6 +246,7 @@ const handleCheckbox = () => {
         type="checkbox"
         :checked="todo.completed"
         v-model="todoChecked"
+        :disabled="todo.archived"
         :id="todo.id"
         :name="todo.id"
         ref="summaryCheckbox"

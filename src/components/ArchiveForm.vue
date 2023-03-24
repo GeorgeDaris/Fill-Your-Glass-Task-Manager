@@ -1,179 +1,268 @@
 <script setup>
-import { reactive } from "vue";
+import { reactive, ref, inject, onBeforeMount } from "vue";
+
+const props = defineProps(["todos"]);
+const emit = defineEmits(["close-form"]);
+
+const allTodos = ref(props.todos);
+const tasksToArchive = allTodos.value.filter(
+  (item) => item.completed && !item.archived
+); //accessing all the completed todos which haven't been archived yet
+
+let date = ref();
+//creating a sample date using the user's current one as the default date of the date picker.
+date.value = new Date().toISOString().substr(0, 10);
+
+let convertedDate = ref();
+//converting back the user's date in order to pick it apart for all the data we need (month, year, etc)
+convertedDate.value = new Date(date.value);
+
+// let formIsOpen = ref(true);
+let warn = ref(false);
+
+const convertDate = () => {
+  const date1 = new Date(date.value);
+  // specifying how we wan to display the date
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  const dateTimeFormat = new Intl.DateTimeFormat("en-US", options);
+
+  //dividing it into parts
+  const parts = dateTimeFormat.formatToParts(date1);
+  const partValues = parts.map((p) => p.value);
+  console.log(partValues);
+
+  newEntry.date.weekday = partValues[0];
+  newEntry.date.month = partValues[2];
+  newEntry.date.day = partValues[4];
+  newEntry.date.year = partValues[6];
+  let newTime = new Date();
+  newEntry.date.hour = newTime.getHours();
+  newEntry.date.minutes = newTime.getMinutes();
+
+  // convertedDate.value = new Date(date.value);
+  // let options = { month: "long" };
+  // let convertedDateMonth = ref();
+  // convertedDateMonth.value = new Intl.DateTimeFormat("en-US", options).format(
+  //   convertedDate.value
+  // );
+
+  // newEntry.date.month = convertedDateMonth.value;
+
+  // convertedDate.value = new Date(date.value);
+  // options = { weekday: "long" };
+  // let convertedDateWeekday = ref();
+  // convertedDateWeekday.value = new Intl.DateTimeFormat("en-US", options).format(
+  //   convertedDate.value
+  // );
+
+  // newEntry.date.weekday = convertedDateWeekday.value;
+};
+
+onBeforeMount(() => {
+  convertDate();
+});
 
 let newEntry = reactive({
+  id: `${Math.floor(Date.now() * Math.random())}`,
   title: "",
   notes: "",
-  tasks: [{}],
-  date: "",
+  tasks: tasksToArchive,
+  date: {
+    year: "",
+    month: "",
+    day: "",
+    weekday: "",
+    hour: "",
+    minutes: "",
+  },
 });
+
+const addArchiveEntry = inject("addArchiveEntry");
+const updateTodo = inject("updateTodo");
+const input = ref(null);
+
+const sendEntry = (entry) => {
+  if (newEntry.title) {
+    addArchiveEntry(entry);
+    newEntry = {
+      id: `${Math.floor(Date.now() * Math.random())}`,
+      title: "",
+      notes: "",
+      tasks: tasksToArchive,
+      date: {
+        year: "",
+        month: "",
+        day: "",
+        weekday: "",
+        hour: "",
+        minutes: "",
+      },
+    };
+
+    //marking archived todos that are still in the list
+    tasksToArchive.forEach((todo) => {
+      updateTodo(todo.id, undefined, undefined, true);
+    });
+    emit("close-form");
+  } else {
+    warn.value = true;
+    input.value.focus();
+  }
+};
+
+// let body = document.querySelector("body");
+// let button = document.querySelector(".archive-button");
+// // let form = ref(null);
+// let form = document.querySelector(".archive-form");
+
+// onMounted(() => {
+//   // let clicksOutside = ref(0);
+//   const closeForm = () => {
+//     let formDescendants = Array.from(form.querySelectorAll("*"));
+//     body.addEventListener("click", (e) => {
+//       e.stopImmediatePropagation();
+//       if (form !== e.target) {
+//         formDescendants.forEach((element) => {
+//           if (e.target === element || e.target === button) {
+//             return;
+//           } else {
+//             console.log("FIRE!");
+//             // console.log(clicksOutside.value);
+//             // if (clicksOutside.value > 1) {
+//             emit("close-form");
+//             // clicksOutside.value = 0;
+//             // } else {
+//             //   clicksOutside.value++;
+//             // }
+//           }
+//         });
+//       }
+//     });
+//   };
+
+//   setTimeout(closeForm(), 0);
+// });
+
+const vFocus = {
+  mounted: (el) => el.focus(),
+};
+
+// let clicks = ref(0);
+
+// const close = () => {
+//   console.log("v- function");
+//   emit("close-form");
+// };
+const handleClickedOutside = async () => {
+  // setTimeout(close(), 0);
+
+  console.log("v- function");
+  emit("close-form");
+
+  // await nextTick();
+  // setTimeout(close(), 0);
+
+  // formIsOpen.value = false;
+  // let clicks = ref(1);
+  // console.log("this works");
+  // console.log(clicks.value);
+  // if (clicks.value >= 1) {
+  //   clicks.value = 0;
+  //   console.log(clicks.value);
+
+  // formIsOpen.value = false;
+  // return;
+  // } else {
+  //   clicks.value++;
+  // formIsOpen.value = true;
+  // }
+};
+
+const vClickOutside = {
+  mounted(el, binding) {
+    el.__ClickOutsideHandler__ = (event) => {
+      if (!(el === event.target || el.contains(event.target))) {
+        binding.value(event);
+      }
+    };
+    setTimeout(
+      () => document.body.addEventListener("click", el.__ClickOutsideHandler__),
+      0
+    );
+  },
+  unmounted(el) {
+    document.body.removeEventListener("click", el.__ClickOutsideHandler__);
+  },
+};
 </script>
 
 <template>
-  <form class="relative" autocomplete="off">
-    <label for="todo" class="text-lg font-semibold">
-      {{ todoInfo.question }}
-    </label>
-    <br />
+  <!-- <pre v-click-outside="handleClickedOutside">
+    {{ newEntry }}
+  </pre> -->
+  <!-- v-if="formIsOpen" -->
+  <!-- v-click-outside="$emit('close-form')" -->
+  <form
+    v-click-outside="handleClickedOutside"
+    class="archive-form relativeNot flex flex-col justify-between border-[0.2rem] rounded-md NOTrounded-t-none p-1 border-accentColor w-64 lg:w-80 h-[27rem] overflow-auto bg-bgColor max-[740px]:w-full dark:bg-darkBg absolute bottom-0 z-[4] NOTtop-[4.1rem] scroll-container shadow-[0.3rem_0.3rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.3rem_0.3rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
+    autocomplete="off"
+    ref="form"
+  >
+    <label for="title" class="m-1"> Title </label>
     <input
-      class="title-input border-[0.2rem] rounded-md p-1 pl-2 border-accentColor w-64 lg:w-80 bg-inherit transition-all duration-100 hover:border-accentLight"
-      :placeholder="todoInfo.placeholder"
-      name="todo"
-      id="todo"
+      class="title-input border-[0.1rem] rounded-md p-1 m-1 border-accentColor bg-inherit transition-all duration-100 hover:border-accentLight"
+      placeholder="E.g Finished my essay"
+      name="title"
+      id="title"
       type="text"
-      v-model.trim="newTodo.title"
+      v-model.trim="newEntry.title"
       ref="input"
-      :class="{ activeForm: formIsOpen }"
+      v-focus
     />
-    <span v-if="warn"> Please add a todo item first </span>
+    <!-- :class="{ activeForm: formIsOpen }" -->
+    <span v-if="warn" class="m-1"> Please add a title first </span>
 
-    <div>
-      <!-- using the div to align it properly for devices with smaller screens, where we set the form and list to be grid containers to justify them to the center. Since it is absolutely positioned it would otherwise breqak out of the intended flow -->
-      <Transition name="slide-fade">
-        <div
-          class="flex flex-col justify-between border-[0.2rem] rounded-md rounded-t-none p-1 border-accentColor w-64 lg:w-80 max-h-[28rem] overflow-auto bg-bgColor dark:bg-darkBg absolute z-[4] top-[4.1rem] scroll-container shadow-[0.3rem_0.3rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.3rem_0.3rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
-          v-show="newTodo.title"
-        >
-          <label class="m-1" for="description">
-            {{ todoInfo.description }}
-          </label>
-          <!-- <br /> -->
-          <textarea
-            class="flex-shrink-0 border-[0.1rem] rounded-md p-1 border-accentColor bg-inherit m-1 resize-none scroll-container"
-            placeholder="Use the three first chapters to showcase the use of literary devices"
-            name="description"
-            id="description"
-            v-model.trim="newTodo.description"
-          ></textarea>
-          <!-- <br /> -->
-          <section>
-            <div class="flex flex-col">
-              <label class="m-1" for="subtask" id="sub-task"> Sub-task </label>
-              <!-- <br /> -->
-              <div class="relative flex flex-col">
-                <input
-                  class="border-[0.1rem] rounded-md p-1 pr-10 border-accentColor over bg-inherit m-1"
-                  :placeholder="todoInfo.placeholder"
-                  name="subtask"
-                  id="subtask"
-                  type="text"
-                  v-model.trim="newTask"
-                  ref="subTaskInput"
-                />
-                <button
-                  class="absolute bottom-[0.27rem] right-1 w-[2.2rem] h-[2.2rem] z-[4] rounded-md rounded-l-none bg-accentColor text-bgColor text-xl font-bold flex items-center justify-center transition-colors duration-3d00 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
-                  @click.prevent="addSubTask"
-                  aria-describedby="sub-task"
-                  title="add sub-task"
-                >
-                  <svg
-                    class=""
-                    width="20"
-                    height="20"
-                    viewBox="0 0 34 34"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    role="presentation"
-                  >
-                    <rect
-                      class="fill-bgColor dark:fill-darkBg"
-                      y="15.3024"
-                      width="33.8837"
-                      height="3.27907"
-                      rx="1.63953"
-                      fill="white"
-                    />
-                    <rect
-                      class="fill-bgColor dark:fill-darkBg"
-                      x="18.5814"
-                      width="33.8837"
-                      height="3.27907"
-                      rx="1.63953"
-                      transform="rotate(90 18.5814 0)"
-                      fill="white"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <!-- <ToolTip :tooltip-parent="'subtask'"> Add a new sub task </ToolTip> -->
-              <p class="m-1" v-if="subTaskWarn">
-                {{ subTaskWarnMessage }}
-              </p>
-              <ul class="m-1 max-h-20 overflow-auto scroll-container">
-                <li
-                  class="list-disc list-inside marker:text-accentColor"
-                  v-for="task in reversedSubTasks"
-                  :key="uniqueSubTaskId"
-                >
-                  {{ task.title }}
-                </li>
-              </ul>
-            </div>
-          </section>
-          <!-- <br /> -->
-          <section class="flex flex-col m-1">
-            <h3>
-              {{ todoInfo.category.title }}
-            </h3>
-            <!-- <CreateCategory @send-category="sendCategory"></CreateCategory> -->
-            <!-- <hr
-              class="bg-lightGrey dark:bg-lightDark h-[0.15rem] border-none rounded-full -my-3 mt-2"
-            /> -->
-            <ul
-              class="flex flex-row justNOTify-center overflow-x-auto overflow-y-hidden gap-4 max-h-28 scroll-container"
-            >
-              <li v-for="category in categories" :key="category.id">
-                <!-- <div
-                class="color-indicator"
-                :style="{ 'background-color': category.color }"
-              ></div>
-              <label :for="category.title">
-                {{ category.title }}
-              </label> -->
-
-                <label :for="category.title">
-                  <CategoryLabel
-                    :labelColor="category.color"
-                    :is-radio-button="true"
-                    v-if="category.title === category.title"
-                    class="m-0"
-                  >
-                    <template #input>
-                      <input
-                        name="category"
-                        type="radio"
-                        :value="category.title"
-                        v-model="newTodo.category"
-                        :id="category.title"
-                        class="absolute top-[1.25rem] left-[0.83rem] appearance-none w-2 h-2 rounded-full bg-bgColor peer checked:bg-accentColor z-[20] dark:bg-darkBg"
-                      />
-                    </template>
-                    <template #name>
-                      {{ category.title }}
-                    </template>
-                  </CategoryLabel>
-                </label>
-              </li>
-            </ul>
-            <!--<label> Simplified it with a v-for
-          {{todoInfo.category.work}}
-        </label>
-        <input name="category" type="radio" :value="todoInfo.category.work" v-model="newTodo.category">
-        <label>
-          {{todoInfo.category.personal}}
-        </label>
-        <input name="category" type="radio" :value="todoInfo.category.personal" v-model="newTodo.category">-->
-          </section>
-          <CreateCategory @send-category="sendCategory"></CreateCategory>
-          <!-- <br /> -->
-          <button
-            class="p-1 m-1 bg-accentColor rounded-md hover:bg-accentLight text-bgColor dark:text-darkBg"
-            @click.enter.prevent="sendTodo"
-          >
-            {{ todoInfo.button }}
-          </button>
-        </div>
-      </Transition>
-    </div>
+    <label class="m-1" for="notes"> Notes </label>
+    <textarea
+      class="flex-shrink-0 border-[0.1rem] rounded-md p-1 border-accentColor bg-inherit m-1 resize-none scroll-container"
+      placeholder=""
+      name="notes"
+      id="notes"
+      v-model.trim="newEntry.notes"
+    ></textarea>
+    <p class="m-1">Tasks</p>
+    <ul class="m-1 max-h-20 overflow-auto scroll-container">
+      <li
+        class="list-disc list-inside marker:text-accentColor"
+        v-for="todo in tasksToArchive"
+        :key="todo.id"
+      >
+        {{ todo.title }}
+      </li>
+    </ul>
+    <label class="m-1" for="date" id="date"> Date </label>
+    <input
+      class="border-[0.1rem] rounded-md p-1 border-accentColor over bg-inherit m-1"
+      placeholder=""
+      name="date"
+      id="date"
+      type="date"
+      v-model="date"
+      @change="convertDate"
+      ref="subTaskInput"
+    />
+    <!-- :value="new Date().toISOString().substr(0, 10)" -->
+    <!-- <button @click.prevent="formIsOpen = false">-</button> -->
+    <button
+      class="p-1 m-1 bg-accentColor rounded-md hover:bg-accentLight text-bgColor dark:text-darkBg"
+      @click.enter.prevent="sendEntry(newEntry)"
+    >
+      Archive entry
+    </button>
   </form>
 </template>
