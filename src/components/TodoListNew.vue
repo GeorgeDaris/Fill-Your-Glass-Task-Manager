@@ -170,4 +170,18 @@ const openArchiveForm = () => {
   opacity: 0;
   transform: translateY(2rem);
 }
+
+.slide-fade-top-router-enter-active {
+  transition: opacity 0.3s ease-out;
+}
+
+.slide-fade-top-router-leave-active {
+  transition: opacity 0.3s ease-out;
+}
+
+.slide-fade-top-router-enter-from,
+.slide-fade-top-router-leave-to {
+  opacity: 0;
+  /* transform: translateY(2rem); */
+}
 </style>

@@ -1,4 +1,7 @@
-<!-- <script setup></script>
+<script setup>
+import TaskView from "../components/TaskView.vue";
+</script>
 
-
-<template></template> -->
+<template>
+  <TaskView />
+</template>

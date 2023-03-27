@@ -1,12 +1,10 @@
 <script setup>
-import { computed, reactive, provide, watch, ref } from "vue";
-import AddTodo from "./components/AddTodo.vue";
-import TodoListNew from "./components/TodoListNew.vue";
-// import ArchiveForm from "./components/ArchiveForm.vue";
+// import AddTodo from "./components/AddTodo.vue";
+// import TodoListNew from "./components/TodoListNew.vue";
 
-import ProgressBar from "./components/ProgressBar.vue";
+// import ProgressBar from "./components/ProgressBar.vue";
+import { reactive, provide, watch } from "vue";
 
-// let title = ref("Fill Your Cup Todo App (test)");
 let todos = reactive([]);
 //using localstorage to retrieve todos
 if (localStorage.todos) {
@@ -46,36 +44,8 @@ if (localStorage.todos) {
     },
   ]);
 }
-// let data = reactive({});
 
-// async function getTodos() {
-//   const requestURL = "http://localhost:3000/todo";
-//   const request = new Request(requestURL);
-
-//   const response = await fetch(request);
-//   data.value = await response.json();
-// }
-
-// let todos = reactive([]);
-
-// onBeforeMount(() => {
-//   getTodos();
-
-//   todos = data.value;
-// });
-
-const todosCompleted = computed(() => {
-  //only if they haven't been archived yet
-  let completedTodos = todos.filter(
-    (item) => item.completed && !item.archived
-  ).length;
-  // return `${completedTodos} of ${todos.length} completed`;
-  if (completedTodos < 2) {
-    return `Archive ${completedTodos} task`;
-  } else {
-    return `Archive ${completedTodos} tasks`;
-  }
-});
+provide("todos", todos);
 
 const addTodo = (newTodo) => {
   let id = Math.floor(Date.now() * Math.random());
@@ -106,10 +76,14 @@ const addTodo = (newTodo) => {
 //     });
 // };
 
+provide("addTodo", addTodo);
+
 const deleteTodo = (todoToDelete) => {
   let todoIndex = todos.findIndex((item) => item.id === todoToDelete.id);
   todos.splice(todoIndex, 1);
 };
+
+provide("deleteTodo", deleteTodo);
 
 const updateTodo = (todoId, newTitle, checkStatus, archiveStatus) => {
   let todoToEdit = todos.find((item) => item.id === todoId);
@@ -127,45 +101,6 @@ const updateTodo = (todoId, newTitle, checkStatus, archiveStatus) => {
 };
 
 provide("updateTodo", updateTodo); //for the EditItem component
-
-const shiftTodos = (itemIndex, currentItem, itemToMove, currentIndex) => {
-  // todos.splice(itemIndex, 1, currentItem);
-  // todos.splice(currentIndex, 1, itemToMove);
-  // currentIndex = currentIndex--;
-  // todos.splice(currentIndex, 1, itemToMove);
-  // todos.splice(currentIndex, 1, itemToMove.title);
-
-  //currently swaps them
-  [todos[itemIndex], todos[currentIndex]] = [
-    todos[currentIndex],
-    todos[itemIndex],
-  ];
-
-  console.log(itemToMove, currentIndex);
-};
-
-provide("shiftTodos", shiftTodos);
-
-let showArchiveButton = ref();
-provide("showArchiveButton", showArchiveButton);
-//changing the todos localStorage item every time a change occurs
-watch(
-  todos,
-  (newValue) => {
-    localStorage.setItem("todos", JSON.stringify(newValue));
-    console.log(newValue);
-
-    if (todos.filter((item) => item.completed && !item.archived).length > 0) {
-      showArchiveButton.value = true;
-    } else {
-      showArchiveButton.value = false;
-    }
-  },
-  {
-    deep: true,
-    immediate: true,
-  }
-);
 
 let categories = reactive([]);
 if (localStorage.categories) {
@@ -191,28 +126,7 @@ if (localStorage.categories) {
   ]);
 }
 
-const addCategory = (category) => {
-  //Emitted event from AddTodo, which came from CreateCategory
-  let id = Math.floor(Date.now() * Math.random());
-  // categories.push(category);
-  categories.push({
-    id: id++,
-    title: category.title,
-    color: category.color,
-  });
-};
-
 provide("categories", categories);
-
-watch(
-  categories,
-  (newValue) => {
-    localStorage.setItem("categories", JSON.stringify(newValue));
-  },
-  {
-    deep: true,
-  }
-);
 
 let archive = reactive([]);
 
@@ -260,36 +174,24 @@ provide("addArchiveEntry", addArchiveEntry);
 
 <template>
   <main class="">
-    <!-- <nav class="absolute top-0 bg-accentColor width-full">test</nav> -->
-    <!-- <header>-->
-    <!-- <pre> -->
-    <!-- {{ todos }}
-        {{ data }} -->
-    <!-- {{ archive }} -->
-    <!-- </pre> -->
-    <!-- <h1>
-          {{ title }}
-        </h1>
-      </header> -->
-    <div
-      class="grid md:grid-cols-[minmax(5rem,_1.5fr)_minmax(7rem,_2fr)] justify-center gap-4 grid-cols-1 md:gap-x-20 lg:gap-x-28 xl:gap-x-32 mt-12 mx-4 md:m-0 md:"
+    <nav
+      class="fixed top-0 left-0 border-r-2 border-lightGrey h-full p-2 dark:border-lightDark"
     >
-      <AddTodo
-        @add-todo="addTodo"
-        @add-category="addCategory"
-        :categories="categories"
-      />
-      <TodoListNew :todos="todos" @delete-todo="deleteTodo">
-        <span>{{ todosCompleted }} </span>
-      </TodoListNew>
-      <!-- <ArchiveForm :todos="todos"></ArchiveForm> -->
-      <ProgressBar
-        class="glass"
-        :total="todos"
-        :glass="true"
-        :tube="false"
-      ></ProgressBar>
-    </div>
+      <ul>
+        <li>
+          <router-link to="/">📋</router-link>
+        </li>
+        <li>
+          <router-link to="/archive">🗄️</router-link>
+        </li>
+      </ul>
+    </nav>
+
+    <router-view v-slot="{ Component }">
+      <!-- <transition name="slide-fade-top-router"> -->
+      <component :is="Component" :key="$route.path" />
+      <!-- </transition> -->
+    </router-view>
   </main>
 </template>
 <!-- class="max-[740px]:grid max-[740px]:justify-center max-[740px]:gap-0 "

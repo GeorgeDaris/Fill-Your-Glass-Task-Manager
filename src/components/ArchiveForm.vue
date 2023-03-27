@@ -43,24 +43,6 @@ const convertDate = () => {
   let newTime = new Date();
   newEntry.date.hour = newTime.getHours();
   newEntry.date.minutes = newTime.getMinutes();
-
-  // convertedDate.value = new Date(date.value);
-  // let options = { month: "long" };
-  // let convertedDateMonth = ref();
-  // convertedDateMonth.value = new Intl.DateTimeFormat("en-US", options).format(
-  //   convertedDate.value
-  // );
-
-  // newEntry.date.month = convertedDateMonth.value;
-
-  // convertedDate.value = new Date(date.value);
-  // options = { weekday: "long" };
-  // let convertedDateWeekday = ref();
-  // convertedDateWeekday.value = new Intl.DateTimeFormat("en-US", options).format(
-  //   convertedDate.value
-  // );
-
-  // newEntry.date.weekday = convertedDateWeekday.value;
 };
 
 onBeforeMount(() => {
@@ -209,6 +191,7 @@ const vClickOutside = {
   <!-- v-click-outside="$emit('close-form')" -->
   <form
     v-click-outside="handleClickedOutside"
+    @keyup.esc="$emit('close-form')"
     class="archive-form relativeNot flex flex-col justify-between border-[0.2rem] rounded-md NOTrounded-t-none p-1 border-accentColor w-64 lg:w-80 h-[27rem] overflow-auto bg-bgColor max-[740px]:w-full dark:bg-darkBg absolute bottom-0 z-[4] NOTtop-[4.1rem] scroll-container shadow-[0.3rem_0.3rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.3rem_0.3rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
     autocomplete="off"
     ref="form"
