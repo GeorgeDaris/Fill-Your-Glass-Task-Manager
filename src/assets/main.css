@@ -8,11 +8,28 @@
 :root {
   --secondary: #eaedf5;
   --accent: #7c94d2;
+  --bg: white;
+  --text: #283453;
 }
+
+/* colors: {
+        accentColor: "#7C94D2",
+        bgColor: "white",
+        textColor: "#283453",
+        accentLight: "#89a4e9",
+        lightGrey: "#EAEDF5",
+        lightDark: "#343945",
+        hrOdd: "#F5EAF0",
+        darkBg: "#1D212A",
+        darkText: "#E7ECF8",
+        hrDarkOdd: "#403C40",
+      }, */
 
 @media (prefers-color-scheme: dark) {
   :root {
     --secondary: #343945;
+    --bg: #1d212a;
+    --text: #e7ecf8;
   }
 }
 
@@ -41,6 +58,37 @@
 
 progress::-moz-progress-bar {
   background-color: #7c94d2;
+}
+
+blockquote {
+  position: relative;
+  margin-left: 1rem;
+  margin-block: 1rem;
+  padding-top: 1rem;
+  padding-left: 1rem;
+  border-left: 0.2rem solid var(--accent);
+  text-indent: 1.2rem;
+  text-align: justify;
+}
+
+blockquote::before {
+  content: "«";
+  color: var(--accent);
+  vertical-align: super;
+  font-size: 2.7rem;
+  padding: 0.2rem;
+  font-weight: bold;
+  position: absolute;
+  top: -1.2rem;
+  left: -1rem;
+  font-size: 2.7rem;
+  font-size: 2.7rem;
+  /* filter: drop-shadow(0.2rem 0.2rem var(--text)); */
+}
+
+blockquote::after {
+  content: "»";
+  vertical-align: sub;
 }
 
 /* 

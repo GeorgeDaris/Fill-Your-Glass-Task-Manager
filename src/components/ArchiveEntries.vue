@@ -15,7 +15,4 @@ const reversedArchive = computed(() => {
       <ArchiveEntry :entry="entry"></ArchiveEntry>
     </li>
   </ul>
-  <!-- <pre>
-    {{ archive }}
-  </pre> -->
 </template>
