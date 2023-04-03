@@ -16,7 +16,7 @@ defineProps(["labelColor", "hasSubTasks", "isRadioButton"]);
       :style="{ 'background-color': labelColor, '--label-color': labelColor }"
     >
       <span
-        class="label-paper bg-bgColor text-textColor py-0.5 px-1 rounded-sm relative before:content-[''] before:inline-block before:absolute before:-top-4 before:right-2 before:w-2 before:h-2 before:bg-bgColor before:rounded-full z-[1] before:shadow-[0.1rem_0.1rem_0rem_0rem] before:shadow-textColor before:dark:bg-darkBg before:dark:shadow-bgColor"
+        class="label-paper bg-bgColor text-textColor whitespace-nowrap py-0.5 px-1 rounded-sm relative before:content-[''] before:inline-block before:absolute before:-top-4 before:right-2 before:w-2 before:h-2 before:bg-bgColor before:rounded-full z-[1] before:shadow-[0.1rem_0.1rem_0rem_0rem] before:shadow-textColor before:dark:bg-darkBg before:dark:shadow-bgColor"
       >
         <slot />
       </span>
@@ -50,7 +50,7 @@ defineProps(["labelColor", "hasSubTasks", "isRadioButton"]);
 
   <div
     v-else
-    class="group abNOTsolute top-4 left-0 scale-[.70] -ml-[0.5rem] -mt-2 lg:-ml-[1.3rem]"
+    class="group w-[7.0rem] overflow-visible abNOTsolute top-4 left-0 scale-[.70] ml-[0.72rem] -mt-2 NOTlg:-ml-[1.3rem]"
     :style="{ '--label-color': labelColor }"
   >
     <div
@@ -58,7 +58,7 @@ defineProps(["labelColor", "hasSubTasks", "isRadioButton"]);
       :style="{ 'background-color': labelColor, '--label-color': labelColor }"
     >
       <span
-        class="label-paper bg-bgColor text-textColor py-0.5 px-1 rounded-sm relative before:content-[''] before:inline-block before:absolute before:-left-4 before:top-2 before:w-2 before:h-2 before:bg-bgColor before:rounded-full z-[1] before:shadow-[0.1rem_0.1rem_0rem_0rem] before:shadow-textColor before:dark:bg-darkBg before:dark:shadow-bgColor"
+        class="label-paper inline bg-bgColor text-textColor whitespace-nowrap py-0.5 px-1 rounded-sm relative before:content-[''] before:inline-block before:absolute before:-left-4 before:top-2 before:w-2 before:h-2 before:bg-bgColor before:rounded-full z-[1] before:shadow-[0.1rem_0.1rem_0rem_0rem] before:shadow-textColor before:dark:bg-darkBg before:dark:shadow-bgColor"
       >
         <slot />
       </span>
