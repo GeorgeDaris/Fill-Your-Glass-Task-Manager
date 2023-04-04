@@ -184,4 +184,14 @@ const openArchiveForm = () => {
   opacity: 0;
   /* transform: translateY(2rem); */
 }
+
+.progress-indicator-enter-active,
+.progress-indicator-leave-active {
+  transition: all 1.3s ease;
+}
+.progress-indicator-enter-from,
+.progress-indicator-leave-to {
+  opacity: 0;
+  transform: translateX(60px);
+}
 </style>

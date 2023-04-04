@@ -5,6 +5,8 @@
 // import ProgressBar from "./components/ProgressBar.vue";
 import { reactive, provide, watch } from "vue";
 
+import NavBar from "./components/NavBar.vue";
+
 let todos = reactive([]);
 //using localstorage to retrieve todos
 if (localStorage.todos) {
@@ -174,19 +176,7 @@ provide("addArchiveEntry", addArchiveEntry);
 
 <template>
   <main class="">
-    <nav
-      class="fixed top-0 left-0 border-r-2 border-lightGrey h-full p-2 dark:border-lightDark"
-    >
-      <ul>
-        <li>
-          <router-link to="/">📋</router-link>
-        </li>
-        <li>
-          <router-link to="/archive">🗄️</router-link>
-        </li>
-      </ul>
-    </nav>
-
+    <NavBar></NavBar>
     <router-view v-slot="{ Component }">
       <!-- <transition name="slide-fade-top-router"> -->
       <component :is="Component" :key="$route.path" />
