@@ -43,6 +43,9 @@ const closeNav = () => {
       <li>
         <router-link to="/archive" @click="closeNav">🗄️</router-link>
       </li>
+      <li>
+        <router-link to="/calendar" @click="closeNav">📅</router-link>
+      </li>
     </ul>
   </nav>
 </template>

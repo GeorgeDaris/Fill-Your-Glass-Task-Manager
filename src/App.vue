@@ -139,20 +139,20 @@ if (localStorage.archive) {
   });
 } else {
   archive = reactive([
-    {
-      id: "",
-      title: "",
-      notes: "",
-      tasks: [],
-      date: {
-        year: "",
-        month: "",
-        day: "",
-        weekday: "",
-        hour: "",
-        minutes: "",
-      },
-    },
+    // {
+    //   id: "",
+    //   title: "",
+    //   notes: "",
+    //   tasks: [],
+    //   date: {
+    //     year: "",
+    //     month: "",
+    //     day: "",
+    //     weekday: "",
+    //     hour: "",
+    //     minutes: "",
+    //   },
+    // },
   ]);
 }
 

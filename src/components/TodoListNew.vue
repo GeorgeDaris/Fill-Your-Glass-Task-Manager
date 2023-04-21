@@ -69,6 +69,7 @@ const openArchiveForm = () => {
           >
             <TodoItem
               :todo="todo"
+              :inArchive="false"
               @delete-todo="$emit('delete-todo', todo)"
               draggable="true"
               @dragstart="startDrag($event, todo)"
@@ -192,6 +193,6 @@ const openArchiveForm = () => {
 .progress-indicator-enter-from,
 .progress-indicator-leave-to {
   opacity: 0;
-  transform: translateX(60px);
+  transform: translateY(30px);
 }
 </style>

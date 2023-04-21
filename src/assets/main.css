@@ -1,6 +1,12 @@
 /* @import "./base.css"; */
 @import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
 
+@import url("https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Monoton&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -12,6 +18,20 @@
   --text: #283453;
 }
 
+@layer base {
+  :root {
+    --accent-color: 124 148 210;
+    --bg-color: 255 255 255;
+    --text-color: 40 52 83;
+    --accent-light: 137 164 233;
+    --light-grey: 234 237 245;
+    --light-dark: 52 57 69;
+    --hr-odd: 245 234 240;
+    --dark-bg: 29 33 42;
+    --dark-text: 231 236 248;
+    --hr-dark-odd: 64 60 64;
+  }
+}
 /* colors: {
         accentColor: "#7C94D2",
         bgColor: "white",

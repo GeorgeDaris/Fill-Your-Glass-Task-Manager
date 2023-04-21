@@ -22,14 +22,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <form v-if="editing">
+  <form @submit.prevent="editLabel" class="z-40 mt-1" v-if="editing">
     <input
       type="text"
       v-model.trim.lazy="newTitle"
-      class="bg-bgColor max-w-[7rem] dark:bg-darkBg"
+      class="bg-bgColor border-b-2 block max-w-[7rem] resize-none focus:outline-none focus:border-b-accentColor dark:bg-darkBg"
       ref="input"
     />
-    <button @click.prevent="editLabel">Save</button>
+    <!-- <button @click.prevent="editLabel">Save</button> -->
   </form>
 </template>
 

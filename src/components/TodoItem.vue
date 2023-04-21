@@ -4,7 +4,7 @@ import ProgressBar from "./ProgressBar.vue";
 import EditItem from "./EditItem.vue";
 import CategoryLabel from "./CategoryLabel.vue";
 
-const props = defineProps(["todo"]);
+const props = defineProps(["todo", "inArchive"]);
 defineEmits(["delete-todo"]);
 
 const categories = inject("categories");
@@ -51,7 +51,7 @@ const handleCheckbox = () => {
     class="hover:opacity-90 transition-opacity duration-300 flex items-start"
     v-if="todo.subTasks && todo.subTasks.length >= 1"
     :class="[
-      todo.archived
+      todo.archived && !inArchive
         ? ['opacity-70', 'border-l-2', 'border-accentColor', 'pl-2']
         : '',
     ]"
@@ -118,18 +118,110 @@ const handleCheckbox = () => {
         </span>
       </label>
       <div
-        class="edit-container absolute right-0 top-0 flex z-40"
+        v-if="!inArchive"
+        class="edit-container absolute right-0 top-0 flex z-50 transition-all duration-75"
         :class="btnActive"
       >
-        <button @click="openEditForm" @focus="showBtns">
-          {{ editingText }}
+        <button
+          class="mx-1 p-1 rounded-sm bg-lightGrey dark:bg-lightDark active:bg-accentColor hover:brightness-110"
+          @click="openEditForm"
+          @focus="showBtns"
+          :title="editingText"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 84 84"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              class="fill-textColor dark:fill-darkText"
+              d="M64.2254 2.82843C65.7875 1.26633 68.3201 1.26633 69.8822 2.82843L80.4888 13.435C82.0509 14.9971 82.0509 17.5298 80.4888 19.0919L74.832 24.7487L58.5685 8.48528L64.2254 2.82843Z"
+              fill="black"
+            />
+            <path
+              class="stroke-textColor dark:stroke-darkText"
+              d="M55.1543 16.8492L66.468 28.1629L21.9202 72.7106C18.7961 75.8348 13.7307 75.8348 10.6065 72.7106C7.48235 69.5864 7.48235 64.5211 10.6065 61.3969L55.1543 16.8492Z"
+              stroke="black"
+              stroke-width="7"
+            />
+          </svg>
         </button>
-        <button @click="$emit('delete-todo', todo)" @focus="showBtns">
-          Delete
+        <button
+          class="mx-1 p-1 rounded-sm bg-lightGrey dark:bg-lightDark active:bg-accentColor hover:brightness-110"
+          @click="$emit('delete-todo', todo)"
+          @focus="showBtns"
+          title="delete"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 33"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              x="3"
+              y="4"
+              width="18"
+              height="27"
+              rx="2"
+              stroke="black"
+              stroke-width="3"
+              class="stroke-textColor dark:stroke-darkText"
+            />
+            <rect
+              y="2"
+              width="24"
+              height="2"
+              rx="1"
+              fill="black"
+              class="fill-textColor dark:fill-darkText"
+            />
+            <rect
+              x="8"
+              y="28"
+              width="20"
+              height="2"
+              rx="1"
+              transform="rotate(-90 8 28)"
+              fill="black"
+              class="fill-textColor dark:fill-darkText"
+            />
+            <rect
+              x="7"
+              y="1"
+              width="10"
+              height="1"
+              rx="0.5"
+              fill="black"
+              class="fill-textColor dark:fill-darkText"
+            />
+            <rect
+              x="11"
+              width="2"
+              height="2"
+              rx="1"
+              fill="black"
+              class="fill-textColor dark:fill-darkText"
+            />
+            <rect
+              x="14"
+              y="28"
+              width="20"
+              height="2"
+              rx="1"
+              transform="rotate(-90 14 28)"
+              fill="black"
+              class="fill-textColor dark:fill-darkText"
+            />
+          </svg>
         </button>
       </div>
+
       <EditItem
-        class="todo-edit-form ml-10 mt-1 z-40"
+        class="todo-edit-form ml-10"
         :todo="todo"
         v-if="isEditing"
         @edited="openEditForm"
@@ -229,7 +321,7 @@ const handleCheckbox = () => {
     draggable="true"
     class="hover:opacity-90 transition-opacity duration-300"
     :class="[
-      todo.archived
+      todo.archived && !inArchive
         ? ['opacity-70', 'border-l-2', 'border-accentColor', 'pl-2']
         : '',
     ]"
@@ -274,16 +366,110 @@ const handleCheckbox = () => {
         {{ todo.title }}
       </span>
     </label>
-    <div class="edit-container absolute right-0 top-0 flex" :class="btnActive">
-      <button @click="openEditForm" @focus="showBtns">
-        {{ editingText }}
+    <div
+      v-if="!inArchive"
+      class="edit-container absolute right-0 top-0 flex z-50 transition-all duration-75"
+      :class="btnActive"
+    >
+      <button
+        class="mx-1 p-1 rounded-sm bg-lightGrey dark:bg-lightDark active:bg-accentColor hover:brightness-110"
+        @click="openEditForm"
+        @focus="showBtns"
+        :title="editingText"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 84 84"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            class="fill-textColor dark:fill-darkText"
+            d="M64.2254 2.82843C65.7875 1.26633 68.3201 1.26633 69.8822 2.82843L80.4888 13.435C82.0509 14.9971 82.0509 17.5298 80.4888 19.0919L74.832 24.7487L58.5685 8.48528L64.2254 2.82843Z"
+            fill="black"
+          />
+          <path
+            class="stroke-textColor dark:stroke-darkText"
+            d="M55.1543 16.8492L66.468 28.1629L21.9202 72.7106C18.7961 75.8348 13.7307 75.8348 10.6065 72.7106C7.48235 69.5864 7.48235 64.5211 10.6065 61.3969L55.1543 16.8492Z"
+            stroke="black"
+            stroke-width="7"
+          />
+        </svg>
       </button>
-      <button @click="$emit('delete-todo', todo)" @focus="showBtns">
-        Delete
+      <button
+        class="mx-1 p-1 rounded-sm bg-lightGrey dark:bg-lightDark active:bg-accentColor hover:brightness-110"
+        @click="$emit('delete-todo', todo)"
+        @focus="showBtns"
+        title="delete"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 33"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            x="3"
+            y="4"
+            width="18"
+            height="27"
+            rx="2"
+            stroke="black"
+            stroke-width="3"
+            class="stroke-textColor dark:stroke-darkText"
+          />
+          <rect
+            y="2"
+            width="24"
+            height="2"
+            rx="1"
+            fill="black"
+            class="fill-textColor dark:fill-darkText"
+          />
+          <rect
+            x="8"
+            y="28"
+            width="20"
+            height="2"
+            rx="1"
+            transform="rotate(-90 8 28)"
+            fill="black"
+            class="fill-textColor dark:fill-darkText"
+          />
+          <rect
+            x="7"
+            y="1"
+            width="10"
+            height="1"
+            rx="0.5"
+            fill="black"
+            class="fill-textColor dark:fill-darkText"
+          />
+          <rect
+            x="11"
+            width="2"
+            height="2"
+            rx="1"
+            fill="black"
+            class="fill-textColor dark:fill-darkText"
+          />
+          <rect
+            x="14"
+            y="28"
+            width="20"
+            height="2"
+            rx="1"
+            transform="rotate(-90 14 28)"
+            fill="black"
+            class="fill-textColor dark:fill-darkText"
+          />
+        </svg>
       </button>
     </div>
     <EditItem
-      class="todo-edit-form"
+      class="todo-edit-form ml-3"
       :todo="todo"
       v-if="isEditing"
       @edited="openEditForm"
