@@ -2,6 +2,7 @@
 // eslint-disable-next-line no-undef
 module.exports = {
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
@@ -11,6 +12,7 @@ module.exports = {
         accentLight: "rgb(var(--accent-light) / <alpha-value>)",
         lightGrey: "rgb(var(--light-grey) / <alpha-value>)",
         lightDark: "rgb(var(--light-dark) / <alpha-value>)",
+        hrOdd: "rgb(var(--hr-odd) / <alpha-value>)",
         hrDark: "rgb(var(--hr-dark) / <alpha-value>)",
         darkBg: "rgb(var(--dark-bg) / <alpha-value>)",
         darkText: "rgb(var(--dark-text) / <alpha-value>)",
