@@ -1,17 +1,29 @@
 <script setup>
-defineProps(["total", "todo", "glass", "tube"]);
+import { computed } from "vue";
+const props = defineProps(["total", "todo", "glass", "tube"]);
+
+const completedTasks = computed(() => {
+  return props.total.filter((item) => item.completed).length;
+});
+
+const taskProgressDescription = computed(() => {
+  return `${completedTasks.value} out of ${props.total.length} tasks completed`;
+});
 </script>
 
 <template>
   <transition name="progress-indicator" appear>
     <div
       v-if="glass"
-      class="flex items-center justify-center m-1 mb-2 mt-0 max-[740px]:mt-10"
+      class="progress-section flex items-center justify-center m-1 mb-2 mt-0 max-[740px]:mt-10"
     >
       <div
         role="progressbar"
         :aria-valuemax="total.length"
-        :aria-valuenow="total.filter((item) => item.completed).length"
+        :aria-valuenow="completedTasks"
+        :aria-label="taskProgressDescription"
+        aria-atomic="true"
+        :title="taskProgressDescription"
         class="glass-of-waves flex overflow-hidden bg-lightGreyNOT bg-gradient-to-bl from-bgColor to-accentLight via-lightGrey h-80 w-80 rounded-full rNOTounded-t-lg relative dark:bg-lightDarkNOT dark:bg-gradient-to-tr dark:from-[#101217] dark:to-lightDark dark:via-darkBg max-[740px]:w-64NOT max-[740px]:h-64NOT"
       >
         <svg
@@ -145,7 +157,6 @@ defineProps(["total", "todo", "glass", "tube"]);
         :aria-valuenow="total.filter((item) => item.completed).length"
         :aria-label="todo.title"
         :id="`progress_${todo.id}`"
-        :name="`progress_${todo.id}`"
         class="bg-lightGrey h-2 w-40 rounded-full dark:bg-lightDark"
       >
         <div
