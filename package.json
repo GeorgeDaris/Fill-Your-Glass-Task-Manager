@@ -9,6 +9,11 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "dompurify": "^3.0.2",
+    "highlight.js": "^11.8.0",
+    "marked": "^4.3.0",
+    "marked-highlight": "^1.0.1",
+    "nord-highlightjs": "^0.2.0",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
   },
