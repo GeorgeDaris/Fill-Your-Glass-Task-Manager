@@ -2,6 +2,8 @@
 <script setup>
 import { reactive, ref, nextTick } from "vue";
 
+import CategoryLabel from "./CategoryLabel.vue";
+
 const emit = defineEmits(["send-category"]);
 
 //let categories = reactive( [ //An array wasn't needed after all, as I'm adding one new category at a time
@@ -26,6 +28,7 @@ const openForm = async () => {
     inputTitle.value.focus();
   } else {
     formOpen.value = !formOpen.value;
+    warn.value = false;
   }
 };
 
@@ -52,7 +55,7 @@ const sendCategory = () => {
 
 <template>
   <button
-    class="w-[2.2rem] h-[2.2rem] m-1 z-[4] rounded-md bg-accentColor text-bgColor text-xl font-bold flex items-center justify-center flex-shrink-0 transition-colors duration-300 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
+    class="w-[2.2rem] h-[2.2rem] my-1 ml-auto mr-0 z-[4] rounded-md bg-accentColor text-bgColor text-xl font-bold flex items-center justify-center flex-shrink-0 transition-colors duration-300 hover:bg-accentLight hover:transition-colors hover:duration-300 dark:text-darkBg"
     @click.prevent="openForm"
     title="add a new category"
     id="add-category"
@@ -104,13 +107,26 @@ const sendCategory = () => {
       />
     </svg>
   </button>
-  <Transition name="slide-fade">
-    <section v-if="formOpen" class="flex flex-col">
+  <!-- <teleport to=""> -->
+  <Transition name="slide-fade-top">
+    <section
+      v-if="formOpen"
+      v-click-outside="openForm"
+      @keyup.esc="openForm"
+      class="flex flex-col flex-grow absolute bNottom-[8.5NOTrem] bottom-44 left-[50%] translate-x-[-50%] translate-y-[50%] z-50 border-[0.2rem] rounded-md NOTrounded-t-none p-1 border-accentColor w-[15rem] lg:w-[19rem] h-72 overflow-auNto bg-bgColor max-[740px]:w-[98%] dark:bg-darkBg"
+    >
+      <CategoryLabel
+        :label-color="newCategory.color"
+        class="scale-95 ml-0 -mt-3 mb-4 relative"
+      >
+        {{ newCategory.title }}
+      </CategoryLabel>
       <label class="m-1" for="Category"> Title </label>
       <input
         class="border-[0.1rem] rounded-md p-1 border-accentColor bg-inherit m-1"
         type="text"
         v-model.trim="newCategory.title"
+        spellcheck="true"
         id="Category"
         name="Category"
         ref="inputTitle"
@@ -119,8 +135,8 @@ const sendCategory = () => {
         {{ warnText }}
       </p>
       <!-- <label> Image </label>
-    <br />
-    <input type="url" v-model.trim="newCategory.image" /> -->
+      <br />
+      <input type="url" v-model.trim="newCategory.image" /> -->
 
       <label class="m-1" for="color">
         <span> Color </span>
@@ -145,12 +161,13 @@ const sendCategory = () => {
 
       <button
         @click.prevent="handleForm"
-        class="p-1 m-1 mb-2 bg-accentColor rounded-md hover:bg-accentLight text-bgColor dark:text-darkBg"
+        class="p-1 m-1 my-auto bg-accentColor rounded-md hover:bg-accentLight text-bgColor dark:text-darkBg"
       >
         Add category
       </button>
     </section>
   </Transition>
+  <!-- </teleport> -->
 </template>
 
 <style>
