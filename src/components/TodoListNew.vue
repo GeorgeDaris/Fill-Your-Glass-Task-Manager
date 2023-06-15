@@ -1,9 +1,9 @@
 <script setup>
-import { inject, provide, ref } from "vue";
+import { inject, ref } from "vue";
 import ArchiveForm from "./ArchiveForm.vue";
 import TodoItem from "./TodoItem.vue";
 
-const props = defineProps(["todos"]);
+const props = defineProps(["todos", "inCalendar"]);
 defineEmits(["delete-todo"]);
 
 const shiftTodos = inject("shiftTodos");
@@ -47,6 +47,12 @@ const openArchiveForm = () => {
   archiveFormOpen.value = !archiveFormOpen.value;
 };
 
+let transitionType = ref("");
+
+props.inCalendar
+  ? (transitionType.value = "scheduled-todos")
+  : (transitionType.value = "todos");
+
 //Create a seperate editing component to prevent the state from changing for all todos ✔
 //Use <details> and <summary> on todos that have sub tasks to create a collapsable accordion ✔
 //Look into creating a unique label
@@ -55,13 +61,14 @@ const openArchiveForm = () => {
 <template>
   <div class="col-start-1 grid relative max-[740px]:w-full">
     <section class="col-start-1 mask">
+      <h4 class="visually-hidden">Tasks</h4>
       <!-- <h4>
       <slot />
     </h4> -->
       <ul
-        class="pr-1 md:w-64 lg:w-80 h-96 overflow-y-auto scroll-container max-[740px]: md:max-w-[24rem]"
+        class="pr-1 md:w-64 lg:w-80 h-[63vh] max-h-[29rem] overflow-y-auto scroll-container max-[740px]: md:max-w-[24rem]"
       >
-        <TransitionGroup name="todos" tag="ul" appear>
+        <TransitionGroup :name="transitionType" appear>
           <li
             class="todo-list-item group"
             v-for="todo in todos.slice().reverse()"
@@ -70,6 +77,7 @@ const openArchiveForm = () => {
             <TodoItem
               :todo="todo"
               :inArchive="false"
+              :in-calendar="props.inCalendar ? true : false"
               @delete-todo="$emit('delete-todo', todo)"
               draggable="true"
               @dragstart="startDrag($event, todo)"
@@ -82,25 +90,20 @@ const openArchiveForm = () => {
             <hr
               class="bg-lightGrey dark:bg-lightDark h-[0.15rem] border-none rounded-full my-1 mt-2 group-last:hidden group-even:bg-hrOdd dark:group-even:bg-hrDarkOdd"
             />
-            <!-- <div class="py-2">
-            <hr
-              class="bg-accentColor dark:bg-accentColor h-[0.15rem] border-none rounded-full my-1 mt-2"
-            />
-          </div> -->
           </li>
         </TransitionGroup>
       </ul>
     </section>
+
     <Transition name="slide-fade">
       <button
-        v-if="showArchiveButton"
+        v-if="showArchiveButton && !props.inCalendar"
         @click="openArchiveForm"
-        class="archive-button p-1 m-1 mt-4 w-[60%] my-0 mx-auto bg-accentColor rounded-md hover:bg-accentLight text-bgColor dark:text-darkBg"
+        class="archive-button absolute -bottom-10 left-1/2 -translate-x-1/2 p-1 w-[60%] bg-accentColor rounded-md hover:bg-accentLight text-bgColor dark:text-darkBg"
       >
         <slot />
       </button>
     </Transition>
-    <!-- <Teleport to="body"> -->
     <Transition name="slide-fade-top">
       <ArchiveForm
         :todos="todos"
@@ -108,7 +111,6 @@ const openArchiveForm = () => {
         @closeForm="openArchiveForm"
       ></ArchiveForm>
     </Transition>
-    <!-- </Teleport> -->
   </div>
 </template>
 
@@ -152,10 +154,28 @@ const openArchiveForm = () => {
 .todos-leave-active {
   transition: all 1.3s ease;
 }
+
 .todos-enter-from,
 .todos-leave-to {
   opacity: 0;
   transform: translateX(-60px);
+}
+
+.scheduled-todos-enter-active,
+.scheduled-todos-leave-active {
+  transition: all 1.3s ease;
+}
+
+.scheduled-todos-enter-from,
+.scheduled-todos-leave-to {
+  opacity: 0;
+  max-height: 0;
+  transform: translateX(-60px);
+}
+
+.scheduled-todos-enter-to,
+.scheduled-todos-leave-from {
+  max-height: 50rem;
 }
 
 .slide-fade-top-enter-active {
@@ -169,7 +189,7 @@ const openArchiveForm = () => {
 .slide-fade-top-enter-from,
 .slide-fade-top-leave-to {
   opacity: 0;
-  transform: translateY(2rem);
+  transform: translateY(1.5rem);
 }
 
 .slide-fade-top-router-enter-active {
