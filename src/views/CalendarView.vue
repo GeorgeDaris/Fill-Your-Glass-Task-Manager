@@ -1,7 +1,7 @@
 <script setup>
-import CalendarElement from "../components/CalendarElement.vue";
+import CalendarSchedule from "../components/CalendarSchedule.vue";
 </script>
 
 <template>
-  <CalendarElement></CalendarElement>
+  <CalendarSchedule></CalendarSchedule>
 </template>
