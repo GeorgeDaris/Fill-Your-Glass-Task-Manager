@@ -4,19 +4,14 @@ import { useMonthToNumber } from "../composables/monthToNumber";
 const props = defineProps(["date"]);
 
 const leadingZero = computed(() => {
-  if (props.date.day < 10) {
-    return "0";
-  } else {
-    return false;
-  }
+  return props.date.day.padStart(2, "0");
 });
 
 const dateTimeString = computed(() => {
   let month = useMonthToNumber(props.date.month);
-  if (month < 10) {
-    month = "0" + String(month);
-  }
-  return `${props.date.year}-${month}-${props.date.day}`;
+  month = String(month).padStart(2, "0");
+  let date = String(props.date.day).padStart(2, "0");
+  return `${props.date.year}-${month}-${date}`;
 });
 </script>
 
@@ -28,7 +23,7 @@ const dateTimeString = computed(() => {
       >
         <time
           :datetime="dateTimeString"
-          class="flex md:block after:content-[''] after:flex-1 w-full h-full p-2 rounded-md border-[1px] border-b-2 border-lightGrey dark:border-lightDark bg-gradient-to-r md:bg-gradient-to-b from-accentColor to-bgColor from-[25%] to-[25%] md:from-[40.5%] md:to-[40.5%] dark:to-darkBg dark:from-[25%] dark:to-[25%] dark:md:from-[40.5%] dark:md:to-[40.5%]"
+          class="flex md:block after:content-[''] after:flex-1 w-full h-full px-2 py-[0.1rem] md:p-2 rounded-md border-[1px] border-b-2 border-lightGrey dark:border-lightDark bg-gradient-to-r md:bg-gradient-to-b from-accentColor to-bgColor from-[25%] to-[25%] md:from-[40.5%] md:to-[40.5%] dark:to-darkBg dark:from-[25%] dark:to-[25%] dark:md:from-[40.5%] dark:md:to-[40.5%]"
         >
           <span
             class="uppercase flex-1 self-center text-left md:text-[0.7rem] tracking-widest inline-block after:content-['\00a0\00a0'] md:after:content-[''] dark:text-darkBg"
@@ -36,10 +31,7 @@ const dateTimeString = computed(() => {
           </span>
 
           <span class="md:block text-2xl tracking-widest md:mt-4">
-            <span v-if="leadingZero"> {{ leadingZero }}{{ date.day }} </span>
-            <span v-else>
-              {{ date.day }}
-            </span>
+            {{ leadingZero }}
           </span>
         </time>
       </p>
