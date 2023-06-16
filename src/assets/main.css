@@ -35,18 +35,6 @@
     --hr-dark-odd: 64 60 64;
   }
 }
-/* colors: {
-        accentColor: "#7C94D2",
-        bgColor: "white",
-        textColor: "#283453",
-        accentLight: "#89a4e9",
-        lightGrey: "#EAEDF5",
-        lightDark: "#343945",
-        hrOdd: "#F5EAF0",
-        darkBg: "#1D212A",
-        darkText: "#E7ECF8",
-        hrDarkOdd: "#403C40",
-      }, */
 
 /* @media (prefers-color-scheme: dark) { */
 /* :root */
@@ -61,8 +49,6 @@
 .scroll-container {
   scrollbar-width: thin;
   scrollbar-color: var(--accent) var(--secondary);
-
-  /* scrollbar-gutter: stable; */
 }
 
 .scroll-container::-webkit-scrollbar {

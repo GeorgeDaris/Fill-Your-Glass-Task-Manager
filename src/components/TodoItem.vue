@@ -245,7 +245,6 @@ const handleCheckbox = () => {
     </div>
   </div>
 
-  <!-- :class="{'opacity-70': todo.archived, 'border': todo.archived }" -->
   <div
     v-else
     draggable="true"

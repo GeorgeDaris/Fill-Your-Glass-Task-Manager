@@ -1,8 +1,4 @@
 <script setup>
-// import AddTodo from "./components/AddTodo.vue";
-// import TodoListNew from "./components/TodoListNew.vue";
-
-// import ProgressBar from "./components/ProgressBar.vue";
 import { reactive, provide, watch, ref, computed } from "vue";
 
 import NavBar from "./components/NavBar.vue";
@@ -216,20 +212,6 @@ if (localStorage.archive) {
   });
 } else {
   archive = reactive([
-    // {
-    //   id: "",
-    //   title: "",
-    //   notes: "",
-    //   tasks: [],
-    //   date: {
-    //     year: "",
-    //     month: "",
-    //     day: "",
-    //     weekday: "",
-    //     hour: "",
-    //     minutes: "",
-    //   },
-    // },
   ]);
 }
 
@@ -394,14 +376,9 @@ provide("deleteItem", deleteItem);
   <main class="relative">
     <NavBar></NavBar>
     <router-view v-slot="{ Component }">
-      <!-- <transition name="slide-fade-top-router"> -->
       <component :is="Component" :key="$route.path" />
-      <!-- </transition> -->
     </router-view>
   </main>
 </template>
-<!-- class="max-[740px]:grid max-[740px]:justify-center max-[740px]:gap-0 "
- -->
-<!-- class="max-[740px]:grid max-[740px]:justify-center" -->
 
 <style></style>

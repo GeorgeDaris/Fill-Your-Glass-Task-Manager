@@ -77,7 +77,6 @@ loadScheduledTasks();
     <TodoListNew :todos="todos" @delete-todo="deleteTodo">
       <span>{{ todosCompleted }} </span>
     </TodoListNew>
-    <!-- <ArchiveForm :todos="todos"></ArchiveForm> -->
     <ProgressBar
       class="glass"
       :total="todos"

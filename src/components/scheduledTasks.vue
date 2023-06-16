@@ -6,7 +6,6 @@ const emit = defineEmits(["change-date"]);
 
 const changeDate = () => {
   emit("change-date", props.date);
-  //   console.log(props.date);
 };
 
 const categories = inject("categories");
@@ -20,18 +19,11 @@ const categoryColor = (todo) => {
   });
   return categoryColor;
 };
-// const properDate = String(props.date).padStart(2, '0')
 </script>
 
 <template>
   <ul class="max-h-8 max-w-[5rem]">
     <template v-for="todo in props.todos" :key="todo.id">
-      <!-- :class="
-          categoryColor(todo)
-            ? [' underline', ` underline-offset-[0.1rem]`, ' decoration-4']
-            : ''
-        " -->
-      <!-- :style="`text-decoration-color: ${categoryColor(todo)}`" -->
       <li
         v-if="todo.date == String(props.date).padStart(2, '0')"
         class="text-xs truncated-text relative mt-[0.1rem]"
@@ -46,29 +38,6 @@ const categoryColor = (todo) => {
         </span>
       </li>
     </template>
-    <!-- <template v-for="(i, index) in 20" :key="props.todos[index].id">
-      <li
-        v-if="props.todos[index].date == String(props.date).padStart(2, '0')"
-        class="text-xs truncated-text relative mt-[0.1rem]"
-        :style="`background: linear-gradient(to bottom, transparent 60%, ${categoryColor(
-          props.todos[index]
-        )} 40%);`"
-      >
-        <span class="drop-shadow-[0.06rem_0.05rem_var(--bg)]">
-          {{ props.todos[index].title }}
-        </span>
-      </li>
-    </template> -->
-    <!-- <li
-      v-for="index in 2"
-      :key="index"
-      :title="props.todos[index].title"
-      class="text-xs truncated-text relative"
-    >
-      <template v-if="props.todos[index].date == props.date">
-        {{ props.todos[index].title }}
-      </template>
-    </li> -->
   </ul>
   <button
     @click="changeDate"

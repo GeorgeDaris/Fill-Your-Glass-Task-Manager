@@ -35,8 +35,6 @@ archive.forEach((entry) => {
       entry.date.day === date.date.day
     ) {
       date.entries.push({ entry });
-      // date.push(entry);
-      // console.log(date);
     }
   });
 });

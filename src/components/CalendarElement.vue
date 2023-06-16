@@ -6,14 +6,7 @@ import scheduledTasks from "./scheduledTasks.vue";
 const emit = defineEmits(["change-date"]);
 
 let today = ref(new Date());
-// const actualDate = ref(new Date());
 
-// "2023-09-11"
-// 2023-05-11
-// .toISOString().substring(0, 10)
-// let currentDate = reactive({});
-
-// const setCurrentDate = () => {
 let currentDate = reactive({
   locale: document.documentElement.getAttribute("lang") || "en-US",
   today: {
@@ -23,9 +16,6 @@ let currentDate = reactive({
     year: today.value.getFullYear(),
   },
 });
-// };
-
-// setCurrentDate();
 
 const weekdays = [
   "Sunday",
@@ -44,9 +34,6 @@ const shortWeekdayNames = computed(() => {
   });
   return short;
 });
-
-// const week = new Intl.Locale("en-US").prototype.getWeekInfo();
-// console.log(week);
 
 const formattedDate = reactive({
   weekday: "",
@@ -136,27 +123,6 @@ watch(
   }
 );
 
-// watch(
-//   currentDate,
-//   () => {
-//     firstDayOfTheMonth.value,
-//       lastDayOfTheMonth.value,
-//       daysOfTheMonth.value,
-//       paddingDays.value,
-//       remainingDays.value,
-//       console.log(currentDate.today);
-//   },
-//   {
-//     deep: true,
-//     immediate: true,
-//   }
-// );
-
-// 35 - daysOfTheMonth.length + paddingDays.length
-
-// };
-// getDays();
-
 //creating a machine readable version of each date for the time element
 const dateTime = (day) => {
   let month = String(currentDate.today.month + 1).padStart(2, "0");
@@ -242,7 +208,6 @@ const addBorder = (selectedDate, currentOne) => {
     hasBorder.value = true;
     return true;
   }
-  // console.log(dateTime(selectedDate), currentOne);
 };
 
 //adding a border to the current date
