@@ -2,9 +2,11 @@
 import { inject, ref } from "vue";
 import ProgressBar from "./ProgressBar.vue";
 import EditItem from "./EditItem.vue";
+import EditButtons from "./EditButtons.vue";
 import CategoryLabel from "./CategoryLabel.vue";
+// import DateIcon from "./DateIcon.vue";
 
-const props = defineProps(["todo", "inArchive"]);
+const props = defineProps(["todo", "inArchive", "inCalendar"]);
 defineEmits(["delete-todo"]);
 
 const categories = inject("categories");
@@ -21,7 +23,6 @@ const hideBtns = () => {
 };
 
 let isEditing = ref(false);
-let editingText = ref("Edit");
 
 const openEditForm = () => {
   isEditing.value ? (isEditing.value = false) : (isEditing.value = true);
@@ -37,11 +38,37 @@ let todoChecked = ref(props.todo.completed);
 
 const handleCheckbox = () => {
   updateTodo(props.todo.id, undefined, todoChecked.value);
-  // updateTodo({ todoId: props.todo.id, checkStatus: todoChecked.value });
-  // todoId, newTitle, archiveStatus, checkStatus
 };
 
-//Create a seperate editing component to prevent the state from changing for all todos ✔
+// let dateObj = {};
+
+// const todoDate = () => {
+//   if (props.todo.date) {
+//     let date = new Date(props.todo.date);
+//     dateObj = {
+//       day: date.getDate(),
+//       month: date.getMonth(),
+//       year: date.getFullYear(),
+//     };
+//   }
+// };
+
+// todoDate();
+
+// const todoDate = computed(() => {
+//   let date = false;
+//   if (props.todo.date) {
+// const fullDate = new Date(props.todo.date);
+// let todoDate = {
+//   year: fullDate.getFullYear(),
+//   month: fullDate.getMonth(),
+//   day: String(fullDate.getDate()),
+// };
+//   }
+//   return date;
+// });
+
+//Create a separate editing component to prevent the state from changing for all todos ✔
 //Use <details> and <summary> on todos that have sub tasks to create a collapsable accordion ✔
 //Look into creating a unique label
 </script>
@@ -58,7 +85,7 @@ const handleCheckbox = () => {
     @mouseenter="showBtns"
     @mouseleave="hideBtns"
   >
-    <!-- checking for the lenght as well, since I'm pushing the subtasks anyway in App.vue, to prevent all todos from appearing inside a details element -->
+    <!-- checking for the length as well, since I'm pushing the subtasks anyway in App.vue, to prevent all todos from appearing inside a details element -->
     <button @click="showDetails" class="mr-1 mt-2 p-1" title="Show sub tasks">
       <svg
         width="16"
@@ -82,7 +109,6 @@ const handleCheckbox = () => {
       <label
         class="inline-flex items-centerNOT items-start my-1 relative z-[3]"
         :for="todo.id"
-        :id="todo.title"
         @dblclick="openEditForm"
       >
         <input
@@ -113,113 +139,17 @@ const handleCheckbox = () => {
         </svg>
         <span
           class="pl-2 peer-checked:line-through peer-checked:opacity-75 transition-all duration-700"
+          :class="[todo.date ? [`before:content-['⏱']`, 'before:mr-2'] : '']"
         >
           {{ todo.title }}
         </span>
       </label>
-      <div
+      <EditButtons
         v-if="!inArchive"
-        class="edit-container absolute right-0 top-0 flex z-50 transition-all duration-75"
-        :class="btnActive"
-      >
-        <button
-          class="mx-1 p-1 rounded-sm bg-lightGrey dark:bg-lightDark active:bg-accentColor hover:brightness-110"
-          @click="openEditForm"
-          @focus="showBtns"
-          :title="editingText"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 84 84"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              class="fill-textColor dark:fill-darkText"
-              d="M64.2254 2.82843C65.7875 1.26633 68.3201 1.26633 69.8822 2.82843L80.4888 13.435C82.0509 14.9971 82.0509 17.5298 80.4888 19.0919L74.832 24.7487L58.5685 8.48528L64.2254 2.82843Z"
-              fill="black"
-            />
-            <path
-              class="stroke-textColor dark:stroke-darkText"
-              d="M55.1543 16.8492L66.468 28.1629L21.9202 72.7106C18.7961 75.8348 13.7307 75.8348 10.6065 72.7106C7.48235 69.5864 7.48235 64.5211 10.6065 61.3969L55.1543 16.8492Z"
-              stroke="black"
-              stroke-width="7"
-            />
-          </svg>
-        </button>
-        <button
-          class="mx-1 p-1 rounded-sm bg-lightGrey dark:bg-lightDark active:bg-accentColor hover:brightness-110"
-          @click="$emit('delete-todo', todo)"
-          @focus="showBtns"
-          title="delete"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 33"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect
-              x="3"
-              y="4"
-              width="18"
-              height="27"
-              rx="2"
-              stroke="black"
-              stroke-width="3"
-              class="stroke-textColor dark:stroke-darkText"
-            />
-            <rect
-              y="2"
-              width="24"
-              height="2"
-              rx="1"
-              fill="black"
-              class="fill-textColor dark:fill-darkText"
-            />
-            <rect
-              x="8"
-              y="28"
-              width="20"
-              height="2"
-              rx="1"
-              transform="rotate(-90 8 28)"
-              fill="black"
-              class="fill-textColor dark:fill-darkText"
-            />
-            <rect
-              x="7"
-              y="1"
-              width="10"
-              height="1"
-              rx="0.5"
-              fill="black"
-              class="fill-textColor dark:fill-darkText"
-            />
-            <rect
-              x="11"
-              width="2"
-              height="2"
-              rx="1"
-              fill="black"
-              class="fill-textColor dark:fill-darkText"
-            />
-            <rect
-              x="14"
-              y="28"
-              width="20"
-              height="2"
-              rx="1"
-              transform="rotate(-90 14 28)"
-              fill="black"
-              class="fill-textColor dark:fill-darkText"
-            />
-          </svg>
-        </button>
-      </div>
-
+        :itemArray="props.inCalendar ? 'scheduledTodos' : 'todos'"
+        :item="todo"
+        :itemType="'todo'"
+      ></EditButtons>
       <EditItem
         class="todo-edit-form ml-10"
         :todo="todo"
@@ -362,112 +292,17 @@ const handleCheckbox = () => {
       </svg>
       <span
         class="pl-2 peer-checked:line-through peer-checked:opacity-75 transition-all duration-700"
+        :class="[todo.date ? [`before:content-['⏱']`, 'before:mr-2'] : '']"
       >
         {{ todo.title }}
       </span>
     </label>
-    <div
+    <EditButtons
       v-if="!inArchive"
-      class="edit-container absolute right-0 top-0 flex z-50 transition-all duration-75"
-      :class="btnActive"
-    >
-      <button
-        class="mx-1 p-1 rounded-sm bg-lightGrey dark:bg-lightDark active:bg-accentColor hover:brightness-110"
-        @click="openEditForm"
-        @focus="showBtns"
-        :title="editingText"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 84 84"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            class="fill-textColor dark:fill-darkText"
-            d="M64.2254 2.82843C65.7875 1.26633 68.3201 1.26633 69.8822 2.82843L80.4888 13.435C82.0509 14.9971 82.0509 17.5298 80.4888 19.0919L74.832 24.7487L58.5685 8.48528L64.2254 2.82843Z"
-            fill="black"
-          />
-          <path
-            class="stroke-textColor dark:stroke-darkText"
-            d="M55.1543 16.8492L66.468 28.1629L21.9202 72.7106C18.7961 75.8348 13.7307 75.8348 10.6065 72.7106C7.48235 69.5864 7.48235 64.5211 10.6065 61.3969L55.1543 16.8492Z"
-            stroke="black"
-            stroke-width="7"
-          />
-        </svg>
-      </button>
-      <button
-        class="mx-1 p-1 rounded-sm bg-lightGrey dark:bg-lightDark active:bg-accentColor hover:brightness-110"
-        @click="$emit('delete-todo', todo)"
-        @focus="showBtns"
-        title="delete"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 33"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect
-            x="3"
-            y="4"
-            width="18"
-            height="27"
-            rx="2"
-            stroke="black"
-            stroke-width="3"
-            class="stroke-textColor dark:stroke-darkText"
-          />
-          <rect
-            y="2"
-            width="24"
-            height="2"
-            rx="1"
-            fill="black"
-            class="fill-textColor dark:fill-darkText"
-          />
-          <rect
-            x="8"
-            y="28"
-            width="20"
-            height="2"
-            rx="1"
-            transform="rotate(-90 8 28)"
-            fill="black"
-            class="fill-textColor dark:fill-darkText"
-          />
-          <rect
-            x="7"
-            y="1"
-            width="10"
-            height="1"
-            rx="0.5"
-            fill="black"
-            class="fill-textColor dark:fill-darkText"
-          />
-          <rect
-            x="11"
-            width="2"
-            height="2"
-            rx="1"
-            fill="black"
-            class="fill-textColor dark:fill-darkText"
-          />
-          <rect
-            x="14"
-            y="28"
-            width="20"
-            height="2"
-            rx="1"
-            transform="rotate(-90 14 28)"
-            fill="black"
-            class="fill-textColor dark:fill-darkText"
-          />
-        </svg>
-      </button>
-    </div>
+      :itemArray="props.inCalendar ? 'scheduledTodos' : 'todos'"
+      :item="todo"
+      :itemType="'todo'"
+    ></EditButtons>
     <EditItem
       class="todo-edit-form ml-3"
       :todo="todo"
@@ -487,13 +322,15 @@ const handleCheckbox = () => {
         {{ category.title }}
       </CategoryLabel>
     </div>
+    <!-- <DateIcon v-if="todo.date" :date="dateObj"></DateIcon>
+    <div v-if="todo.date">{{ dateObj }}</div> -->
     <ProgressBar
       v-if="todo.subTasks && todo.subTasks.length > 1"
       :total="todo.subTasks"
     ></ProgressBar>
     <p
       v-if="todo.description"
-      class="text-sm p-[0.3rem] bg-lightGrey whitespace-pre-wrap break-words dark:bg-lightDark m-1 rounded-md ml-[1.7rem] max-w-[390.95px]"
+      class="text-sm p-[0.3rem] bg-lightGrey whitespace-pre-wrap break-words dark:bg-lightDark m-1 rounded-md ml-[1.7rem] maxNOT-w-[390.95px]"
     >
       {{ todo.description }}
     </p>
