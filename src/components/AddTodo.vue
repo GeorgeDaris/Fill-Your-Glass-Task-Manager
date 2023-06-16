@@ -1,12 +1,23 @@
 <!-- eslint-disable prettier/prettier -->
 <script setup>
-import { ref, reactive, computed, nextTick, watch } from "vue";
+import {
+  ref,
+  reactive,
+  computed,
+  nextTick,
+  watch,
+  inject,
+  onMounted,
+} from "vue";
 import CreateCategory from "./CreateCategory.vue";
-import ToolTip from "./ToolTip.vue";
+// import ToolTip from "./ToolTip.vue";
 import CategoryLabel from "./CategoryLabel.vue";
+// import EditButtons from "./EditButtons.vue";
 
-defineProps(["categories"]);
-const emit = defineEmits(["add-todo", "add-category"]);
+const props = defineProps(["categories", "todoToEdit"]);
+const emit = defineEmits(["add-todo", "add-category", "update-todo"]);
+
+const updateTodo = inject("updateTodo");
 
 const todoInfo = ref({
   question: "What needs to be done?",
@@ -17,18 +28,19 @@ const todoInfo = ref({
     work: "Work",
     personal: "Personal",
   },
-  button: "Add to-do",
+  button: props.todoToEdit ? "Update task" : "Add to-do",
 });
 
-const newTodo = reactive({
-  title: "",
-  description: "",
-  category: "",
-  archived: "",
-  subTasks: [],
-});
+const newTodo = props.todoToEdit
+  ? reactive({ ...props.todoToEdit })
+  : reactive({
+      title: "",
+      description: "",
+      category: "",
+      archived: "",
+      subTasks: [],
+    });
 
-let warn = ref(false);
 let subTaskOpen = ref(false);
 let subTaskWarnMessage = ref("Please enter a sub task first");
 let subTaskWarn = ref(false);
@@ -37,11 +49,25 @@ let subTaskInput = ref(null);
 
 const addSubTask = async () => {
   if (newTask.value) {
-    newTodo.subTasks.push({ title: newTask.value });
+    if (
+      props.todoToEdit &&
+      props.todoToEdit.subTasks.length == 0 &&
+      newTodo.subTasks.length == 0
+    ) {
+      newTodo.subTasks = [];
+    }
+    newTodo.subTasks.push({
+      id: `${Math.floor(Date.now() * Math.random())}`,
+      title: newTask.value,
+    });
     subTaskWarn.value = false;
     newTask.value = "";
+    //removing this functionality for the edit view as it isn't working
+    // if (props.todoToEdit === undefined) {
+    console.log(props.todoToEdit);
     await nextTick();
     subTaskInput.value.focus();
+    // }
   } else {
     subTaskWarn.value = true;
     await nextTick();
@@ -49,18 +75,31 @@ const addSubTask = async () => {
   }
 };
 
-const uniqueSubTaskId = computed(() => {
-  return Date.now + Math.random();
-});
-
 const reversedSubTasks = computed(() => {
   return newTodo.subTasks.slice().reverse();
 });
 
-let input = ref(null); //accesing the input element
+let input = ref(null); //accessing the input element
+
+onMounted(async () => {
+  // focusing on the input to start editing
+  if (props.todoToEdit) {
+    await nextTick();
+    input.value.focus();
+  }
+});
 
 const sendTodo = async () => {
-  if (newTodo.title) {
+  console.log("hey");
+
+  if (props.todoToEdit) {
+    updateTodo(props.todoToEdit.id, newTodo);
+    emit("update-todo");
+
+    await nextTick();
+    subTaskOpen.value = false;
+    console.log("task updated");
+  } else if (newTodo.title) {
     emit("add-todo", newTodo);
     newTodo.title = "";
     newTodo.description = "";
@@ -69,11 +108,7 @@ const sendTodo = async () => {
 
     await nextTick();
     input.value.focus();
-    warn.value = false;
     subTaskOpen.value = false;
-  } else {
-    warn.value = true;
-    input.value.focus();
   }
 };
 
@@ -82,25 +117,36 @@ const sendCategory = (newCategory) => {
   emit("add-category", newCategory);
 };
 
-let formIsOpen = ref(false);
+let formIsOpen = props.todoToEdit ? ref(true) : ref(false);
 
 watch(newTodo, async (newerTodo) => {
   //conditionally changing the border radius when the user starts typing
   newerTodo.title ? (formIsOpen.value = true) : (formIsOpen.value = false);
 });
+
+//closing the form in case the user is editing a task
+const handleClickOutside = () => {
+  props.todoToEdit ? emit("update-todo") : "";
+};
 </script>
 
 <template>
-  <form class="relative" autocomplete="off">
-    <!--<pre>{{newTodo}}
-    </pre>-->
-    <label for="todo" class="text-lg font-semibold">
-      {{ todoInfo.question }}
+  <form
+    v-click-outside="handleClickOutside"
+    @keyup.esc="handleClickOutside"
+    class="relative"
+    autocomplete="off"
+  >
+    <!-- <pre
+      >{{ newTodo }}
+    </pre> -->
+    <label for="todo" class="text-lg font-semibold block">
+      <slot />
     </label>
-    <br />
     <input
-      class="title-input border-[0.2rem] rounded-md p-1 pl-2 border-accentColor w-64 lg:w-80 bg-inherit transition-all duration-100 hover:border-accentLight max-[740px]:w-full"
+      class="title-input border-[0.2rem] rounded-md p-1 pl-2 border-accentColor focus:shadow-[0.3rem_0rem_0px_0px_#ffffff,0.4rem_0rem_0px_0px_#7DDECD] w-64 lg:w-80 bg-bgColor transition-all duration-100 hover:border-accentLight max-[740px]:w-full dark:bg-darkBg dark:focus:shadow-[0.3rem_0rem_0px_0px_#1d212a,0.4rem_0rem_0px_0px_#7DDECD]"
       :placeholder="todoInfo.placeholder"
+      spellcheck="true"
       name="todo"
       id="todo"
       type="text"
@@ -108,35 +154,35 @@ watch(newTodo, async (newerTodo) => {
       ref="input"
       :class="{ activeForm: formIsOpen }"
     />
-    <span v-if="warn"> Please add a todo item first </span>
 
-    <div>
-      <!-- using the div to align it properly for devices with smaller screens, where we set the form and list to be grid containers to justify them to the center. Since it is absolutely positioned it would otherwise breqak out of the intended flow -->
+    <div class="relative">
+      <!-- using the div to align it properly for devices with smaller screens, where we set the form and list to be grid containers to justify them to the center. Since it is absolutely positioned it would otherwise break out of the intended flow -->
       <Transition name="slide-fade">
         <div
-          class="flex flex-col justify-between border-[0.2rem] rounded-md rounded-t-none p-1 border-accentColor w-64 lg:w-80 max-h-[28rem] overflow-auto bg-bgColor max-[740px]:w-full dark:bg-darkBg absolute z-[4] top-[4.1rem] scroll-container shadow-[0.3rem_0.3rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.3rem_0.3rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
+          class="add-todo-section flex flex-col justify-between border-[0.2rem] rounded-md rounded-t-none p-1 border-accentColor w-64 lg:w-80 hNOT-[28rem] h-[75vh] max-h-[32rem] overflow-auto bg-bgColor max-[740px]:w-full dark:bg-darkBg absolute z-[4] top-[-0.2rem] topNOT-[4.1rem] scroll-container-secondary shadow-[0.3rem_0.3rem_0px_0px_#ffffff,0.4rem_0.4rem_0px_0px_#7DDECD] dark:shadow-[0.3rem_0.3rem_0px_0px_#1d212a,0.4rem_0.4rem_0px_0px_#7DDECD]"
           v-show="newTodo.title"
         >
-          <label class="m-1" for="description">
-            {{ todoInfo.description }}
-          </label>
-          <!-- <br /> -->
-          <textarea
-            class="flex-shrink-0 border-[0.1rem] rounded-md p-1 border-accentColor bg-inherit m-1 resize-none scroll-container"
-            placeholder="Use the three first chapters to showcase the use of literary devices"
-            name="description"
-            id="description"
-            v-model.trim="newTodo.description"
-          ></textarea>
-          <!-- <br /> -->
+          <div class="flex flex-col">
+            <label class="m-1" for="description">
+              {{ todoInfo.description }}
+            </label>
+            <textarea
+              class="flex-shrink-0 border-[0.1rem] rounded-md p-1 border-accentColor bg-inherit m-1 resize-none scroll-container"
+              placeholder="Use the three first chapters to showcase the use of literary devices"
+              name="description"
+              id="description"
+              v-model.trim="newTodo.description"
+            ></textarea>
+          </div>
           <section>
             <div class="flex flex-col">
-              <label class="m-1" for="subtask" id="sub-task"> Sub-task </label>
+              <label class="m-1" for="subtask" id="sub-task"> Sub-tasks </label>
               <!-- <br /> -->
               <div class="relative flex flex-col">
                 <input
                   class="border-[0.1rem] rounded-md p-1 pr-10 border-accentColor over bg-inherit m-1"
                   :placeholder="todoInfo.placeholder"
+                  spellcheck="true"
                   name="subtask"
                   id="subtask"
                   type="text"
@@ -182,39 +228,36 @@ watch(newTodo, async (newerTodo) => {
               <p class="m-1" v-if="subTaskWarn">
                 {{ subTaskWarnMessage }}
               </p>
-              <ul class="m-1 max-h-20 overflow-auto scroll-container">
+              <ul
+                class="m-1 max-h-20 max-h-7NOT overflow-auto scroll-container"
+              >
                 <li
                   class="list-disc list-inside marker:text-accentColor"
                   v-for="task in reversedSubTasks"
-                  :key="uniqueSubTaskId"
+                  :key="task.id"
                 >
                   {{ task.title }}
                 </li>
               </ul>
             </div>
           </section>
-          <!-- <br /> -->
           <section class="flex flex-col m-1">
-            <h3>
-              {{ todoInfo.category.title }}
-            </h3>
-            <!-- <CreateCategory @send-category="sendCategory"></CreateCategory> -->
-            <!-- <hr
-              class="bg-lightGrey dark:bg-lightDark h-[0.15rem] border-none rounded-full -my-3 mt-2"
-            /> -->
+            <div class="flex">
+              <h3>
+                {{ todoInfo.category.title }}
+              </h3>
+              <CreateCategory @send-category="sendCategory"></CreateCategory>
+            </div>
             <ul
-              class="flex flex-row justNOTify-center overflow-x-auto overflow-y-hidden gap-4 max-h-28 scroll-container"
+              class="flex flex-row justNOTify-center overflow-x-auto overflow-y-hidden gap-4 max-h-28 scroll-container mask"
             >
-              <li v-for="category in categories" :key="category.id">
-                <!-- <div
-                class="color-indicator"
-                :style="{ 'background-color': category.color }"
-              ></div>
-              <label :for="category.title">
-                {{ category.title }}
-              </label> -->
-
-                <label :for="category.title">
+              <!-- Setting a min-width to prevent the labels from getting squashed -->
+              <li
+                v-for="category in categories"
+                :key="category.id"
+                class="min-w-[2rem] relative"
+              >
+                <label :for="category.id">
                   <CategoryLabel
                     :labelColor="category.color"
                     :is-radio-button="true"
@@ -227,8 +270,8 @@ watch(newTodo, async (newerTodo) => {
                         type="radio"
                         :value="category.title"
                         v-model="newTodo.category"
-                        :id="category.title"
-                        class="absolute top-[1.25rem] left-[0.83rem] appearance-none w-2 h-2 rounded-full bg-bgColor peer checked:bg-accentColor z-[20] dark:bg-darkBg"
+                        :id="category.id"
+                        class="absolute top-[1.25rem] left-[0.83rem] appearance-none w-2 h-2 rounded-full bg-bgColor peer checked:bg-accentColor z-[20] dark:bg-darkBg dark:checked:bg-accentColor"
                       />
                     </template>
                     <template #name>
@@ -236,18 +279,15 @@ watch(newTodo, async (newerTodo) => {
                     </template>
                   </CategoryLabel>
                 </label>
+                <!-- <EditButtons
+                  :item-array="'categories'"
+                  :item="category"
+                  class="left-0 -top-1 scale-50"
+                ></EditButtons> -->
               </li>
             </ul>
-            <!--<label> Simplified it with a v-for
-          {{todoInfo.category.work}}
-        </label>
-        <input name="category" type="radio" :value="todoInfo.category.work" v-model="newTodo.category">
-        <label>
-          {{todoInfo.category.personal}}
-        </label>
-        <input name="category" type="radio" :value="todoInfo.category.personal" v-model="newTodo.category">-->
           </section>
-          <CreateCategory @send-category="sendCategory"></CreateCategory>
+          <!-- <CreateCategory @send-category="sendCategory"></CreateCategory> -->
           <!-- <br /> -->
           <button
             class="p-1 m-1 bg-accentColor rounded-md hover:bg-accentLight text-bgColor dark:text-darkBg"
