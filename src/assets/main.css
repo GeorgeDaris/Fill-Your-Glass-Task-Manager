@@ -16,6 +16,9 @@
   --accent: #7c94d2;
   --bg: white;
   --text: #283453;
+  --grey: #eaedf5;
+
+  --month-color: #e2bc8d;
 }
 
 @layer base {
@@ -45,13 +48,15 @@
         hrDarkOdd: "#403C40",
       }, */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --secondary: #343945;
-    --bg: #1d212a;
-    --text: #e7ecf8;
-  }
+/* @media (prefers-color-scheme: dark) { */
+/* :root */
+.dark {
+  --secondary: #343945;
+  --bg: #1d212a;
+  --text: #e7ecf8;
+  --grey: #343945;
 }
+/* } */
 
 .scroll-container {
   scrollbar-width: thin;
@@ -62,12 +67,30 @@
 
 .scroll-container::-webkit-scrollbar {
   width: 0.5rem;
+  height: 0.5rem;
   background-color: var(--secondary);
   border-radius: 2rem;
 }
 
 .scroll-container::-webkit-scrollbar-thumb {
   background-color: #7c94d2;
+  border-radius: 2rem;
+}
+
+.scroll-container-secondary {
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary) transparent;
+}
+
+.scroll-container-secondary::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: transparent;
+  border-radius: 2rem;
+}
+
+.scroll-container-secondary::-webkit-scrollbar-thumb {
+  background-color: var(--secondary);
   border-radius: 2rem;
 }
 
@@ -80,18 +103,57 @@ progress::-moz-progress-bar {
   background-color: #7c94d2;
 }
 
-blockquote {
-  position: relative;
-  margin-left: 1rem;
-  margin-block: 1rem;
-  padding-top: 1rem;
-  padding-left: 1rem;
-  border-left: 0.2rem solid var(--accent);
-  text-indent: 1.2rem;
-  text-align: justify;
+.visually-hidden {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }
 
+.thick-text-shadow {
+  text-shadow: 0.04rem 0.03rem var(--bg), 0.06rem 0.05rem var(--bg),
+    0.09rem 0.08rem var(--bg), 0.12rem 0.08rem var(--bg),
+    -0.04rem -0.03rem var(--bg);
+}
+
+.notes p:first-of-type,
+h2 + p,
+h3 + p,
+h4 + p,
+h5 + p,
+h6 + p {
+  @apply indent-0;
+}
+
+.notes blockquote {
+  @apply relative ml-[0.4rem] my-4 pl-4 indent-6 text-justify;
+}
+/* 
+hover:transition-all hover:duration-300 hover:before:shadow-[0px_0px_0px_0px_white] hover:before:transition-shadow hover:before:duration-300; */
+
 blockquote::before {
+  content: "";
+  width: 0.2rem;
+  height: 80%;
+  position: absolute;
+  background-color: var(--accent);
+  top: 50%;
+  transform: translateY(-50%);
+  left: -0.4rem;
+  box-shadow: 0.6rem 0.6rem 0rem -0.01rem var(--secondary);
+  /* box-shadow: 0 20px 0 -1px red; */
+}
+
+/* blockquote::before:hover {
+  box-shadow: 0rem 0rem 0rem -0.01rem var(--secondary);
+  background: red;
+  transition: all 0.3s;
+} */
+
+/* blockquote::before {
   content: "«";
   color: var(--accent);
   vertical-align: super;
@@ -103,13 +165,13 @@ blockquote::before {
   left: -1rem;
   font-size: 2.7rem;
   font-size: 2.7rem;
-  /* filter: drop-shadow(0.2rem 0.2rem var(--text)); */
-}
+  filter: drop-shadow(0.2rem 0.2rem var(--text));
+} */
 
-blockquote::after {
+/* blockquote::after {
   content: "»";
   vertical-align: sub;
-}
+} */
 
 /* 
 accentColor: "#7C94D2",
@@ -120,3 +182,103 @@ accentColor: "#7C94D2",
         lightGrey: "#EAEDF5",
         darkBg: "#1D212A",
         darkText: "#E7ECF8", */
+
+/* .notes input[type="checkbox"] {
+  @apply appearance-none border-[0.15rem] rounded-md p-2 mt-1 border-accentColor bg-inherit cursor-pointer checked:bg-accentColor;
+} */
+
+.notes ul {
+  @apply ml-4;
+}
+
+.notes ol {
+  @apply ml-8;
+}
+
+/* .notes ul li {
+  @apply list-disc marker:text-accentColor;
+}
+
+.notes li {
+  @apply list-none;
+} */
+
+/* .notes li:has(ul) {
+  @apply  list-none;
+} */
+
+/* li ol {
+  @apply list-[square];
+} */
+
+/* .notes li ul li {
+  @apply list-[circle];
+} */
+
+/* .notes .square {
+  @apply list-[square];
+} */
+
+.notes ol li {
+  @apply list-decimal;
+}
+
+.notes hr {
+  @apply bg-lightGrey dark:bg-lightDark h-[0.15rem] border-none rounded-full my-2;
+}
+
+.notes h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-bold indent-0 my-2;
+}
+
+.notes h1 {
+  @apply text-2xl;
+}
+
+.notes h2 {
+  @apply text-xl;
+}
+
+.notes h3 {
+  @apply text-lg;
+}
+
+.notes h4 {
+  @apply text-base;
+}
+
+.notes a {
+  @apply text-accentColor underline underline-offset-2 decoration-2 hover:text-accentLight;
+}
+
+/* Adding a background for blocks that don't specify a language as a fallback  */
+.notes pre {
+  @apply bg-lightGrey whitespace-pre-wrap rounded-md m-2 dark:bg-lightDark;
+}
+
+.notes pre code {
+  @apply rounded-md p-2 px-4;
+}
+
+.notes p code {
+  @apply bg-lightGrey p-1 rounded-sm dark:bg-lightDark;
+}
+
+.notes img {
+  @apply rounded-md;
+}
+
+sup {
+  @apply ml-1;
+}
+
+/* shadow-[0rem_0rem_1px_0.1rem_#13151b,_0rem_0rem_0px_0.2rem_#1a1d25,_0rem_0rem_2px_0.3rem_#13151b,_0rem_1.3rem_0px_-0.5rem_#171a21,_0rem_1.3rem_2px_-0.5rem_#13151b,_0rem_1.9rem_0px_-0.8rem_#181921,_0rem_1.9rem_2px_-0.8rem_#13151b] */
+
+/* * {
+  border: 1px solid red;
+} */
