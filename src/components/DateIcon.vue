@@ -13,6 +13,16 @@ const dateTimeString = computed(() => {
   let date = String(props.date.day).padStart(2, "0");
   return `${props.date.year}-${month}-${date}`;
 });
+
+// truncating the month name for mobile devices
+const truncatedMonth = computed(() => {
+  let width = window.innerWidth > 0 ? window.innerWidth : screen.Width;
+  if (width < 768) {
+    return props.date.month.substring(0, 3);
+  } else {
+    return props.date.month;
+  }
+});
 </script>
 
 <template>
@@ -27,7 +37,7 @@ const dateTimeString = computed(() => {
         >
           <span
             class="uppercase flex-1 self-center text-left md:text-[0.7rem] tracking-widest inline-block after:content-['\00a0\00a0'] md:after:content-[''] dark:text-darkBg"
-            >{{ date.month }}
+            >{{ truncatedMonth }}
           </span>
 
           <span class="md:block text-2xl tracking-widest md:mt-4">
