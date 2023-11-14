@@ -258,7 +258,7 @@ onUpdated(() => changeMonthColor());
 
 <template>
   <article
-    class="w-[80%]NOT min-h-[30rem] h-[60vh] md:h-[80vh] bg-bgColor rounded-md overflow-hidden grid grid-cols-1 grid-rows-[1.5fr_3fr] shadow-[0rem_0.1rem_1px_0rem_#dcddde,_0rem_0.7rem_0px_-0.3rem_#f9fafa,_0rem_0.7rem_2px_-0.3rem_#dcddde,_0rem_1.3rem_0px_-0.5rem_#f8f8f8,_0rem_1.3rem_2px_-0.5rem_#dcddde,_0rem_1.9rem_0px_-0.8rem_#f4f5f5,_0rem_1.9rem_2px_-0.8rem_#dcddde] dark:shadow-[0rem_0.1rem_1px_0rem_#13151b,_0rem_0.7rem_0px_-0.3rem_#1a1d25,_0rem_0.7rem_2px_-0.3rem_#13151b,_0rem_1.3rem_0px_-0.5rem_#171a21,_0rem_1.3rem_2px_-0.5rem_#13151b,_0rem_1.9rem_0px_-0.8rem_#181921,_0rem_1.9rem_2px_-0.8rem_#13151b] dark:bg-darkBg"
+    class="min-h-[30rem] h-[60vh] md:h-[80vh] bg-bgColor rounded-md overflow-hidden grid grid-cols-1 grid-rows-[1.5fr_3fr] shadow-[0rem_0.1rem_1px_0rem_#dcddde,_0rem_0.7rem_0px_-0.3rem_#f9fafa,_0rem_0.7rem_2px_-0.3rem_#dcddde,_0rem_1.3rem_0px_-0.5rem_#f8f8f8,_0rem_1.3rem_2px_-0.5rem_#dcddde,_0rem_1.9rem_0px_-0.8rem_#f4f5f5,_0rem_1.9rem_2px_-0.8rem_#dcddde] dark:shadow-[0rem_0.1rem_1px_0rem_#13151b,_0rem_0.7rem_0px_-0.3rem_#1a1d25,_0rem_0.7rem_2px_-0.3rem_#13151b,_0rem_1.3rem_0px_-0.5rem_#171a21,_0rem_1.3rem_2px_-0.5rem_#13151b,_0rem_1.9rem_0px_-0.8rem_#181921,_0rem_1.9rem_2px_-0.8rem_#13151b] dark:bg-darkBg"
     :style="{ '--month-color': monthColor }"
   >
     <header
@@ -277,7 +277,7 @@ onUpdated(() => changeMonthColor());
       <!-- {{ hasBorder }} -->
       <Transition name="list">
         <h1
-          class="text-[3rem] font-monotonNOT font-gfsDidotNOT uppercase col-span-2 col-start-1 self-end dark:text-darkBg leading-3"
+          class="text-[3rem] font-monotonNOT font-gfsDidotNOT uppercase col-span-2 col-start-1 self-end dark:text-darkBg leading-7"
           :key="formattedDate.month"
         >
           {{ formattedDate.month }}

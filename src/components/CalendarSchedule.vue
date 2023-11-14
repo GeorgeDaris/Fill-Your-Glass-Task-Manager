@@ -68,7 +68,9 @@ const sendTodo = (task, date) => {
 </script>
 
 <template>
-  <div class="grid relative mx-4 md:ml-16 gap-10 md:grid-cols-[2fr_1fr]">
+  <div
+    class="grid relative mx-4 md:ml-16 gap-10 md:grid-cols-[2fr_1fr] 2xl:w-[90vw] 2xl:grid-cols[2fr_auto] 2xl:gap-[5%]"
+  >
     <transition name="todos" appear>
       <CalendarElement
         @change-date="(date) => changeDate(date)"

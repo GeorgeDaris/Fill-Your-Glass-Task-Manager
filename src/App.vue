@@ -30,26 +30,27 @@ if (localStorage.todos) {
   todos = reactive([
     {
       id: 1,
-      title: "Make it work",
-      category: "Personal",
+      title: "Welcome the user",
+      description:
+        "Welcome to Fill Your Cup! A task manager complete with markdown supported notes and a calendar.",
       completed: true,
       archived: false,
     },
     {
       id: 0,
-      title: "Create a vue todo app",
+      title: "Create a task management app using Vue.",
       description: "test",
       category: "Personal",
-      completed: false,
+      completed: true,
       archived: false,
       subTasks: [
         {
-          id: 0,
+          id: 2,
           title: "make sub-tasks work",
           completed: true,
         },
         {
-          id: 1,
+          id: 3,
           title: "Style it with CSS",
           completed: false,
         },
@@ -211,8 +212,7 @@ if (localStorage.archive) {
     archive.push(entry);
   });
 } else {
-  archive = reactive([
-  ]);
+  archive = reactive([]);
 }
 
 watch(
